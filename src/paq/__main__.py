@@ -1,4 +1,5 @@
 from typing import Iterable, List, Optional
+from pathlib import Path
 import dataclasses
 import zipfile
 import requests
@@ -74,7 +75,6 @@ class PaqConf:
 @dataclasses.dataclass
 class Package:
     name: str
-    version: str
     download_url: str
     content_type: str
 
@@ -122,12 +122,11 @@ def get_all_packages(onwer: str = "Saverio976", repo: str = "Raytracer") -> List
     packages = api.repos.get_latest_release(onwer, repo)
     def transform(package) -> Optional[Package]:
         try:
-            name, version, _ = package["name"].split("__")
+            name = Path(package["name"]).stem
         except ValueError:
             return None
         return Package(
             name=name,
-            version=version,
             download_url=package["browser_download_url"],
             content_type=package["content_type"]
         )
