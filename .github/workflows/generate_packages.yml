@@ -24,6 +24,8 @@ jobs:
           done
 
       - name: Add failed package
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [[ -f /tmp/packages-failed.log ]]; then
             gh release view --json body --jq '.body' > notes.txt
