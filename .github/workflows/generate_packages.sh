@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ex
 
 for file in ./packages/*
 do
