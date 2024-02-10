@@ -20,4 +20,4 @@ COPY ./metadata.toml /tmp/out/metadata.toml
 run echo "version = \"$(git describe main --tags --abbrev=0)\"" >> /tmp/out/metadata.toml
 
 # cmd
-cmd ["cp", "-r", "/tmp/out", "/out"]
+cmd ["cp", "-r", "/tmp/out/*", "/out"]

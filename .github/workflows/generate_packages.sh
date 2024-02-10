@@ -1,6 +1,9 @@
 #!/bin/bash
 set -ex
 
+rm -rf /tmp/packages
+mkdir -p /tmp/packages
+
 for file in ./packages/*
 do
     if [ -d "$file" ]
