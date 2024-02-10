@@ -46,3 +46,5 @@ do
         NB_CONCURRENT_NOW=$((NB_CONCURRENT_NOW+1))
     fi
 done
+
+wait $(jobs -rp)
