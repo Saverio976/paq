@@ -11,13 +11,14 @@ build_package() {
     FILE="$1"
     status=0
     echo "Building $FILE"
+    rm -rf "/tmp/out-$(basename "$FILE")"
+    rm -rf "/tmp/out-$(basename "$FILE").zip"
+    rm -rf "/tmp/out-$(basename "$FILE").log"
     (
         set -ex
         exec 3>&1 4>&2 > "/tmp/out-$(basename "$FILE").log" 2>&1
+        echo "Building $FILE"
         cd "$FILE"
-        rm -rf "/tmp/out-$(basename "$FILE")"
-        rm -rf "/tmp/out-$(basename "$FILE").zip"
-        rm -rf "/tmp/out-$(basename "$FILE").log"
         mkdir "/tmp/out-$(basename "$FILE")"
         docker build . -t "package-tmp-$(basename "$FILE")"
         docker run --rm -v "/tmp/out-$(basename "$FILE"):/out" "package-tmp-$(basename "$FILE")"
