@@ -25,6 +25,7 @@ distribution = true
 
 [tool.pdm.scripts]
 build = "pdm run nuitka3 --follow-imports --standalone --onefile src/paq"
+run = "python ./src/paq"
 
 [tool.pdm.dev-dependencies]
 dev = [

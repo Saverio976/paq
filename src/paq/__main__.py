@@ -12,7 +12,14 @@ import argparse
 import tempfile
 from xdg_base_dirs import xdg_data_home, xdg_config_home
 import os
+import re
 from ghapi.all import GhApi
+
+import sys
+
+if not sys.warnoptions:
+    import warnings
+    warnings.simplefilter("ignore")
 
 
 def get_default_bin_dir() -> str:
@@ -237,6 +244,14 @@ def handler_uninstall(conf: PaqConf, args: argparse.Namespace):
     for package in pacakages_to_remove:
         remove_package(package, ConfRemove(conf.install_dir, conf.bin_dir))
 
+def handler_search(_: PaqConf, args: argparse.Namespace):
+    packages = get_all_packages()
+    queries = list(map(re.compile, args.query))
+    for package in packages:
+        for query in queries:
+            if query.match(package.name) is not None:
+                print(package.name)
+
 def create_parser(conf: PaqConf) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Install packages")
     parser.add_argument("--install-dir", nargs=1, default=conf.install_dir, type=str, action="store", help="Specify where packages will be installed")
@@ -266,6 +281,10 @@ def create_parser(conf: PaqConf) -> argparse.ArgumentParser:
     parser_uninstall = subparser.add_parser("uninstall")
     parser_uninstall.set_defaults(func=handler_uninstall)
     parser_uninstall.add_argument("packages", nargs="*", type=str, action="store", help="Packages to install")
+
+    parser_search = subparser.add_parser("search")
+    parser_search.set_defaults(func=handler_search)
+    parser_search.add_argument("query", nargs="*", type=str, action="store", help="Queries to search (regex)")
 
     return parser
 
