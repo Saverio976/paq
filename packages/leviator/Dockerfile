@@ -7,6 +7,7 @@ run apt-get install -y git
 # build
 run git clone https://github.com/X-R-G-B/Leviator.git /leviator
 workdir /leviator
+run git checkout main
 run ./scripts/InstallDepsLinux.bash
 run make
 
@@ -20,4 +21,4 @@ COPY ./metadata.toml /tmp/out/metadata.toml
 run echo "version = \"$(git describe main --tags --abbrev=0)\"" >> /tmp/out/metadata.toml
 
 # cmd
-cmd ["cp", "-r", "/tmp/out/*", "/out"]
+cmd cp -r /tmp/out/* /out
