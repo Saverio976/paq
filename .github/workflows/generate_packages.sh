@@ -15,7 +15,7 @@ do
             mkdir /tmp/out
             docker build . -t "package-tmp-$(basename "$file")"
             docker run --rm -v /tmp/out:/out "package-tmp-$(basename "$file")"
-            zip -r /tmp/out.zip /tmp/out
+            (cd /tmp/out && zip -r /tmp/out.zip .)
             cp /tmp/out.zip "/tmp/packages/$(basename "$file").zip"
         )
     fi

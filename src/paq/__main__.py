@@ -120,7 +120,7 @@ class MetaData:
             name=d["name"],
         )
 
-def get_all_packages(onwer: str = "Saverio976", repo: str = "Raytracer") -> List[Package]:
+def get_all_packages(onwer: str = "Saverio976", repo: str = "paq") -> List[Package]:
     api = GhApi()
     packages = api.repos.get_latest_release(onwer, repo)
     def transform(package) -> Optional[Package]:
@@ -138,6 +138,7 @@ def get_all_packages(onwer: str = "Saverio976", repo: str = "Raytracer") -> List
         for package in packages:
             if package is not None:
                 new_packages.append(package)
+        print(f"Number of all packages: {len(new_packages)}")
         return new_packages
     return filter_ok(map(transform, packages["assets"]))
 
@@ -150,6 +151,7 @@ class ConfInstall:
 def download_package(package: Package, conf: ConfInstall):
     if package.content_type != "application/zip":
         raise ValueError(f"Unexpected content type: {package.content_type}")
+    print(f"Downloading package: {package.name}")
     directory = tempfile.TemporaryDirectory()
     download_file = os.path.join(directory.name, package.name) + ".zip"
     with requests.get(package.download_url, allow_redirects=True, stream=True) as r:
@@ -246,11 +248,11 @@ def create_parser(conf: PaqConf) -> argparse.ArgumentParser:
 
     parser_update = subparser.add_parser("update")
     parser_update.set_defaults(func=handler_update)
-    parser_install.add_argument("packages", nargs="*", type=str, action="store", help="Packages to install")
+    parser_update.add_argument("packages", nargs="*", type=str, action="store", help="Packages to install")
 
     parser_uninstall = subparser.add_parser("uninstall")
     parser_uninstall.set_defaults(func=handler_uninstall)
-    parser_install.add_argument("packages", nargs="*", type=str, action="store", help="Packages to install")
+    parser_uninstall.add_argument("packages", nargs="*", type=str, action="store", help="Packages to install")
 
     return parser
 
