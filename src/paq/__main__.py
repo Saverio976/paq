@@ -13,6 +13,7 @@ import tempfile
 from xdg_base_dirs import xdg_data_home, xdg_config_home
 import os
 import re
+from rich_argparse import RawDescriptionRichHelpFormatter
 from ghapi.all import GhApi
 
 import sys
@@ -286,7 +287,9 @@ def handler_search(_: PaqConf, args: argparse.Namespace):
 
 
 def create_parser(conf: PaqConf) -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Install packages")
+    parser = argparse.ArgumentParser(
+        formatter_class=RawDescriptionRichHelpFormatter, description="Install packages"
+    )
     parser.add_argument(
         "--install-dir",
         nargs=1,

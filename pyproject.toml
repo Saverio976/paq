@@ -10,6 +10,8 @@ dependencies = [
     "requests>=2.31.0",
     "xdg-base-dirs>=6.0.1",
     "toml>=0.10.2",
+    "rich-argparse>=1.4.0",
+    "rich>=13.7.0",
 ]
 requires-python = ">=3.11"
 readme = "README.md"
