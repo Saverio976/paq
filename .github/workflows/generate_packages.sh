@@ -8,26 +8,27 @@ MAX_CONCURRENT=10
 NB_CONCURRENT_NOW=0
 
 build_package() {
-    file="$1"
+    FILE="$1"
     status=0
-    echo "Building $file"
+    echo "Building $FILE"
     (
-        set -e
-        cd "$file"
-        rm -rf "/tmp/out-$(basename "$file")"
-        rm -rf "/tmp/out-$(basename "$file").zip"
-        rm -rf "/tmp/out-$(basename "$file").log"
-        mkdir "/tmp/out-$(basename "$file")"
-        docker build . -t "package-tmp-$(basename "$file")"
-        docker run --rm -v "/tmp/out-$(basename "$file"):/out" "package-tmp-$(basename "$file")"
-        (cd "/tmp/out-$(basename "$file")" && zip -r "/tmp/out-$(basename "$file").zip" .)
-        cp "/tmp/out-$(basename "$file").zip" "/tmp/packages/$(basename "$file").zip"
-    ) &>> "/tmp/out-$(basename "$file").log"
+        set -ex
+        exec 3>&1 4>&2 > "/tmp/out-$(basename "$FILE").log" 2>&1
+        cd "$FILE"
+        rm -rf "/tmp/out-$(basename "$FILE")"
+        rm -rf "/tmp/out-$(basename "$FILE").zip"
+        rm -rf "/tmp/out-$(basename "$FILE").log"
+        mkdir "/tmp/out-$(basename "$FILE")"
+        docker build . -t "package-tmp-$(basename "$FILE")"
+        docker run --rm -v "/tmp/out-$(basename "$FILE"):/out" "package-tmp-$(basename "$FILE")"
+        (cd "/tmp/out-$(basename "$FILE")" && zip -r "/tmp/out-$(basename "$FILE").zip" .)
+        cp "/tmp/out-$(basename "$FILE").zip" "/tmp/packages/$(basename "$FILE").zip"
+    )
     if [ "$?" -ne "0" ]
     then
-        echo "Failed to build $file"
-        echo "Failed to build $file" >> "/tmp/packages-failed.log"
-        cat "/tmp/out-$(basename "$file").log"
+        echo "Failed to build $FILE"
+        echo "Failed to build $FILE" >> "/tmp/packages-failed.log"
+        cat "/tmp/out-$(basename "$FILE").log"
         status=1
     fi
     NB_CONCURRENT_NOW=$((NB_CONCURRENT_NOW-1))
