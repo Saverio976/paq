@@ -241,6 +241,7 @@ def create_parser(conf: PaqConf) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Install packages")
     parser.add_argument("--install-dir", nargs=1, default=conf.install_dir, type=str, action="store", help="Specify where packages will be installed")
     parser.add_argument("--bin-dir", nargs=1, default=conf.bin_dir, type=str, action="store", help="Specify where binaries will be symlinked")
+    parser.set_defaults(func=lambda conf, args: parser.print_help())
     subparser = parser.add_subparsers()
 
     parser_config = subparser.add_parser("config")

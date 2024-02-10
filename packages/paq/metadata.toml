@@ -1,0 +1,8 @@
+author = "Saverio976"
+description = "WIP side project package manager"
+homepage = "https://github.com/Saverio976/paq"
+license = "MIT"
+binaries = [
+    "bin/paq"
+]
+name = "paq"

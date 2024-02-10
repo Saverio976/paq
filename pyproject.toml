@@ -23,6 +23,13 @@ build-backend = "pdm.backend"
 [tool.pdm]
 distribution = true
 
+[tool.pdm.scripts]
+build = "pdm run nuitka3 --follow-imports --standalone --onefile src/paq"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "nuitka>=2.0.2",
+]
 [tool.pyright]
 exclude = [ ".venv" ]
 venvPath = "."
