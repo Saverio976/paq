@@ -30,6 +30,7 @@ run = "python ./src/paq"
 [tool.pdm.dev-dependencies]
 dev = [
     "nuitka>=2.0.2",
+    "black>=24.1.1",
 ]
 [tool.pyright]
 exclude = [ ".venv" ]

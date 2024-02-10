@@ -19,6 +19,7 @@ import sys
 
 if not sys.warnoptions:
     import warnings
+
     warnings.simplefilter("ignore")
 
 
@@ -30,6 +31,7 @@ def get_default_bin_dir() -> str:
         if os.access(dirr, os.X_OK):
             return dirr
     raise FileNotFoundError("No PATH dir writable found")
+
 
 @dataclasses.dataclass
 class PaqConf:
@@ -47,7 +49,6 @@ class PaqConf:
                 return PaqConf.from_dict(toml.load(f))
         except FileNotFoundError:
             return PaqConf.from_dict({})
-
 
     @staticmethod
     def from_dict(d: dict):
@@ -91,6 +92,7 @@ class Package:
     download_url: str
     content_type: str
 
+
 @dataclasses.dataclass
 class MetaData:
     author: str
@@ -130,9 +132,11 @@ class MetaData:
             name=d["name"],
         )
 
+
 def get_all_packages(onwer: str = "Saverio976", repo: str = "paq") -> List[Package]:
     api = GhApi()
     packages = api.repos.get_latest_release(onwer, repo)
+
     def transform(package) -> Optional[Package]:
         try:
             name = Path(package["name"]).stem
@@ -141,8 +145,9 @@ def get_all_packages(onwer: str = "Saverio976", repo: str = "paq") -> List[Packa
         return Package(
             name=name,
             download_url=package["browser_download_url"],
-            content_type=package["content_type"]
+            content_type=package["content_type"],
         )
+
     def filter_ok(packages: Iterable[Optional[Package]]) -> List[Package]:
         new_packages = []
         for package in packages:
@@ -150,13 +155,16 @@ def get_all_packages(onwer: str = "Saverio976", repo: str = "paq") -> List[Packa
                 new_packages.append(package)
         print(f"Number of all packages: {len(new_packages)}")
         return new_packages
+
     return filter_ok(map(transform, packages["assets"]))
+
 
 @dataclasses.dataclass
 class ConfInstall:
     install_dir: str
     bin_dir: str
     update: bool
+
 
 def download_package(package: Package, conf: ConfInstall):
     if package.content_type != "application/zip":
@@ -170,8 +178,8 @@ def download_package(package: Package, conf: ConfInstall):
             for chunk in r.iter_content(chunk_size=8192):
                 f.write(chunk)
     data = None
-    with zipfile.ZipFile(download_file, 'r') as zipp:
-        with zipp.open('metadata.toml') as meta:
+    with zipfile.ZipFile(download_file, "r") as zipp:
+        with zipp.open("metadata.toml") as meta:
             data = MetaData.from_dict(tomllib.load(meta))
     if data is None:
         raise ValueError(f"Failed to load metadata.toml from package {package.name}")
@@ -188,20 +196,34 @@ def download_package(package: Package, conf: ConfInstall):
                 os.remove(os.path.join(conf.bin_dir, binary))
             os.removedirs(install_dir)
             os.makedirs(install_dir)
-    with zipfile.ZipFile(download_file, 'r') as zipp:
+    with zipfile.ZipFile(download_file, "r") as zipp:
         zipp.extractall(install_dir)
     os.remove(download_file)
     for binary in data.binaries:
         if platform in ("linux", "darwin"):
-            os.chmod(os.path.join(install_dir, binary), stat.S_IXUSR | stat.S_IRUSR | stat.S_IXGRP | stat.S_IRGRP | stat.S_IXOTH)
-        os.symlink(os.path.join(install_dir, binary), os.path.join(conf.bin_dir, os.path.basename(binary)))
-        print(f"Symlinked {os.path.join(conf.bin_dir, binary)} -> {os.path.join(install_dir, binary)}")
+            os.chmod(
+                os.path.join(install_dir, binary),
+                stat.S_IXUSR
+                | stat.S_IRUSR
+                | stat.S_IXGRP
+                | stat.S_IRGRP
+                | stat.S_IXOTH,
+            )
+        os.symlink(
+            os.path.join(install_dir, binary),
+            os.path.join(conf.bin_dir, os.path.basename(binary)),
+        )
+        print(
+            f"Symlinked {os.path.join(conf.bin_dir, binary)} -> {os.path.join(install_dir, binary)}"
+        )
     print(f"Installed package: {package.name}")
+
 
 @dataclasses.dataclass
 class ConfRemove:
     install_dir: str
     bin_dir: str
+
 
 def remove_package(package: Package, conf: ConfRemove):
     print(f"Removing package: {package.name}")
@@ -209,7 +231,9 @@ def remove_package(package: Package, conf: ConfRemove):
     with open(os.path.join(install_dir, "metadata.toml"), "rb") as meta:
         data = MetaData.from_dict(tomllib.load(meta))
     for binary in data.binaries:
-        print(f"Removing symlink: {os.path.join(conf.bin_dir, os.path.basename(binary))}")
+        print(
+            f"Removing symlink: {os.path.join(conf.bin_dir, os.path.basename(binary))}"
+        )
         try:
             os.remove(os.path.join(conf.bin_dir, os.path.basename(binary)))
         except FileNotFoundError:
@@ -217,12 +241,15 @@ def remove_package(package: Package, conf: ConfRemove):
     shutil.rmtree(install_dir)
     print(f"Removed package: {package.name}")
 
+
 def handler_config_get(conf: PaqConf, args: argparse.Namespace):
     print(conf.get(args.key[0]))
+
 
 def handler_config_set(conf: PaqConf, args: argparse.Namespace):
     conf.set(args.key[0], args.value[0])
     conf.save()
+
 
 def handler_install(conf: PaqConf, args: argparse.Namespace):
     conf.bin_dir = args.bin_dir
@@ -230,11 +257,15 @@ def handler_install(conf: PaqConf, args: argparse.Namespace):
     packages = get_all_packages()
     pacakages_to_install = filter(lambda p: p.name in args.packages, packages)
     for package in pacakages_to_install:
-        download_package(package, ConfInstall(conf.install_dir, conf.bin_dir, args.update))
+        download_package(
+            package, ConfInstall(conf.install_dir, conf.bin_dir, args.update)
+        )
+
 
 def handler_update(conf: PaqConf, args: argparse.Namespace):
     args.update = True
     handler_install(conf, args)
+
 
 def handler_uninstall(conf: PaqConf, args: argparse.Namespace):
     conf.bin_dir = args.bin_dir
@@ -244,6 +275,7 @@ def handler_uninstall(conf: PaqConf, args: argparse.Namespace):
     for package in pacakages_to_remove:
         remove_package(package, ConfRemove(conf.install_dir, conf.bin_dir))
 
+
 def handler_search(_: PaqConf, args: argparse.Namespace):
     packages = get_all_packages()
     queries = list(map(re.compile, args.query))
@@ -252,10 +284,25 @@ def handler_search(_: PaqConf, args: argparse.Namespace):
             if query.match(package.name) is not None:
                 print(package.name)
 
+
 def create_parser(conf: PaqConf) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Install packages")
-    parser.add_argument("--install-dir", nargs=1, default=conf.install_dir, type=str, action="store", help="Specify where packages will be installed")
-    parser.add_argument("--bin-dir", nargs=1, default=conf.bin_dir, type=str, action="store", help="Specify where binaries will be symlinked")
+    parser.add_argument(
+        "--install-dir",
+        nargs=1,
+        default=conf.install_dir,
+        type=str,
+        action="store",
+        help="Specify where packages will be installed",
+    )
+    parser.add_argument(
+        "--bin-dir",
+        nargs=1,
+        default=conf.bin_dir,
+        type=str,
+        action="store",
+        help="Specify where binaries will be symlinked",
+    )
     parser.set_defaults(func=lambda conf, args: parser.print_help())
     subparser = parser.add_subparsers()
 
@@ -263,35 +310,53 @@ def create_parser(conf: PaqConf) -> argparse.ArgumentParser:
     subparser_config = parser_config.add_subparsers()
     parser_config_get = subparser_config.add_parser("get")
     parser_config_get.set_defaults(func=handler_config_get)
-    parser_config_get.add_argument("key", nargs=1, type=str, action="store", help="Key to get")
+    parser_config_get.add_argument(
+        "key", nargs=1, type=str, action="store", help="Key to get"
+    )
     parser_config_set = subparser_config.add_parser("set")
     parser_config_set.set_defaults(func=handler_config_set)
-    parser_config_set.add_argument("key", nargs=1, type=str, action="store", help="Key to set")
-    parser_config_set.add_argument("value", nargs=1, type=str, action="store", help="Value to set")
+    parser_config_set.add_argument(
+        "key", nargs=1, type=str, action="store", help="Key to set"
+    )
+    parser_config_set.add_argument(
+        "value", nargs=1, type=str, action="store", help="Value to set"
+    )
 
     parser_install = subparser.add_parser("install")
     parser_install.set_defaults(func=handler_install)
-    parser_install.add_argument("--update", action="store_true", default=False, help="Update existing packages")
-    parser_install.add_argument("packages", nargs="*", type=str, action="store", help="Packages to install")
+    parser_install.add_argument(
+        "--update", action="store_true", default=False, help="Update existing packages"
+    )
+    parser_install.add_argument(
+        "packages", nargs="*", type=str, action="store", help="Packages to install"
+    )
 
     parser_update = subparser.add_parser("update")
     parser_update.set_defaults(func=handler_update)
-    parser_update.add_argument("packages", nargs="*", type=str, action="store", help="Packages to install")
+    parser_update.add_argument(
+        "packages", nargs="*", type=str, action="store", help="Packages to install"
+    )
 
     parser_uninstall = subparser.add_parser("uninstall")
     parser_uninstall.set_defaults(func=handler_uninstall)
-    parser_uninstall.add_argument("packages", nargs="*", type=str, action="store", help="Packages to install")
+    parser_uninstall.add_argument(
+        "packages", nargs="*", type=str, action="store", help="Packages to install"
+    )
 
     parser_search = subparser.add_parser("search")
     parser_search.set_defaults(func=handler_search)
-    parser_search.add_argument("query", nargs="*", type=str, action="store", help="Queries to search (regex)")
+    parser_search.add_argument(
+        "query", nargs="*", type=str, action="store", help="Queries to search (regex)"
+    )
 
     return parser
+
 
 def main():
     conf = PaqConf.get_conf()
     parser = create_parser(conf)
     args = parser.parse_args()
     args.func(conf, args)
+
 
 main()
