@@ -63,11 +63,14 @@ class PaqConf:
     def set(self, key: str, value: str):
         if key == "install_dir":
             self.install_dir = value
-        if key == "bin_dir":
+        elif key == "bin_dir":
             self.bin_dir = value
-        raise KeyError(f"Unknown key: {key}")
+        else:
+            raise KeyError(f"Unknown key: {key}")
 
     def save(self):
+        if not os.path.isdir(os.path.dirname(PaqConf.get_path_config())):
+            os.makedirs(os.path.dirname(PaqConf.get_path_config()))
         with open(PaqConf.get_path_config(), "w") as f:
             toml.dump(dataclasses.asdict(self), f)
 
