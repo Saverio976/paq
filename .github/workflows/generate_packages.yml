@@ -6,6 +6,7 @@ on:
 
 jobs:
   generate:
+    permissions: write-all
     name: Generate Packages
     runs-on: ubuntu-latest
     steps:
@@ -19,7 +20,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           for file in /tmp/packages/*.zip; do
-            echo "Uploading $file on tag ${{ github.event.release.tag_name }}"
-            echo "else: ${{ github.event.release.id }}"
-            gh release upload ${{ github.event.release.tag_name }} "$file"
+            gh release upload "${{ github.event.release.tag_name }}" "$file"
           done
