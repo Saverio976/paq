@@ -7,7 +7,7 @@ run apt-get install -y git
 # build
 run git clone https://github.com/X-R-G-B/Leviator.git /leviator
 workdir /leviator
-run ./scripts/InstallDepsLinux.sh
+run ./scripts/InstallDepsLinux.bash
 run make
 
 # generate files packaged
