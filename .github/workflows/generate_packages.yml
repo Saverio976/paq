@@ -22,3 +22,12 @@ jobs:
           for file in /tmp/packages/*.zip; do
             gh release upload "${{ github.event.release.tag_name }}" "$file"
           done
+
+      - name: Add failed package
+        run: |
+          if [[ -f /tmp/packages-failed.log ]]; then
+            gh release view --json body --jq '.body' > notes.txt
+            echo "---" >> notes.txt
+            cat /tmp/packages-failed.log >> notes.txt
+            gh release edit "${{ github.event.release.tag_name }}" --notes-file notes.txt
+          fi
