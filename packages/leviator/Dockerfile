@@ -10,7 +10,8 @@ workdir /leviator
 run ./scripts/InstallDepsLinux.bash
 run make
 
-# generate files packaged
+# generate files packaged to a temporary directory
+run mkdir -p /tmp/out/bin
 run cp ./lvtc/lvtc-exe /tmp/out/bin/lvtc
 run cp ./lvtrun/lvtrun-exe /tmp/out/bin/lvtrun
 run cp ./README.md /tmp/out/README.md
