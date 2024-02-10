@@ -1,4 +1,4 @@
-from haskell:latest
+from haskell:9.6.3
 
 # install deps
 run apt-get update -y
