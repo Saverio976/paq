@@ -50,3 +50,4 @@ do
 done
 
 wait $(jobs -rp)
+exit 0
