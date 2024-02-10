@@ -1,10 +1,13 @@
 from typing import Iterable, List, Optional
+import shutil
 from pathlib import Path
 import dataclasses
 import zipfile
 import requests
 import tomllib
 import toml
+from sys import platform
+import stat
 import argparse
 import tempfile
 from xdg_base_dirs import xdg_data_home, xdg_config_home
@@ -165,7 +168,7 @@ def download_package(package: Package, conf: ConfInstall):
             data = MetaData.from_dict(tomllib.load(meta))
     if data is None:
         raise ValueError(f"Failed to load metadata.toml from package {package.name}")
-    install_dir = os.path.join(conf.install_dir, data.author, package.name)
+    install_dir = os.path.join(conf.install_dir, package.name)
     try:
         os.makedirs(install_dir, exist_ok=False)
     except FileExistsError:
@@ -182,8 +185,11 @@ def download_package(package: Package, conf: ConfInstall):
         zipp.extractall(install_dir)
     os.remove(download_file)
     for binary in data.binaries:
-        os.symlink(os.path.join(install_dir, binary), os.path.join(conf.bin_dir, binary))
+        if platform in ("linux", "darwin"):
+            os.chmod(os.path.join(install_dir, binary), stat.S_IXUSR | stat.S_IRUSR | stat.S_IXGRP | stat.S_IRGRP | stat.S_IXOTH)
+        os.symlink(os.path.join(install_dir, binary), os.path.join(conf.bin_dir, os.path.basename(binary)))
         print(f"Symlinked {os.path.join(conf.bin_dir, binary)} -> {os.path.join(install_dir, binary)}")
+    print(f"Installed package: {package.name}")
 
 @dataclasses.dataclass
 class ConfRemove:
@@ -191,12 +197,18 @@ class ConfRemove:
     bin_dir: str
 
 def remove_package(package: Package, conf: ConfRemove):
+    print(f"Removing package: {package.name}")
     install_dir = os.path.join(conf.install_dir, package.name)
     with open(os.path.join(install_dir, "metadata.toml"), "rb") as meta:
         data = MetaData.from_dict(tomllib.load(meta))
     for binary in data.binaries:
-        os.remove(os.path.join(conf.bin_dir, binary))
-    os.removedirs(install_dir)
+        print(f"Removing symlink: {os.path.join(conf.bin_dir, os.path.basename(binary))}")
+        try:
+            os.remove(os.path.join(conf.bin_dir, os.path.basename(binary)))
+        except FileNotFoundError:
+            print("Something already deleted the symlink")
+    shutil.rmtree(install_dir)
+    print(f"Removed package: {package.name}")
 
 def handler_config_get(conf: PaqConf, args: argparse.Namespace):
     print(conf.get(args.key[0]))
