@@ -11,6 +11,8 @@ run git checkout main
 run ./scripts/InstallDepsLinux.bash
 run make
 
+run false
+
 # generate files packaged to a temporary directory
 run mkdir -p /tmp/out/bin
 run cp ./lvtc/lvtc-exe /tmp/out/bin/lvtc
