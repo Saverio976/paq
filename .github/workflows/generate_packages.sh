@@ -9,6 +9,7 @@ NB_CONCURRENT_NOW=0
 
 build_package() {
     file="$1"
+    status=0
     echo "Building $file"
     (
         set -e
@@ -22,7 +23,6 @@ build_package() {
         (cd "/tmp/out-$(basename "$file")" && zip -r "/tmp/out-$(basename "$file").zip" .)
         cp "/tmp/out-$(basename "$file").zip" "/tmp/packages/$(basename "$file").zip"
     ) &>> "/tmp/out-$(basename "$file").log"
-    status=0
     if [ "$?" -ne "0" ]
     then
         echo "Failed to build $file"
