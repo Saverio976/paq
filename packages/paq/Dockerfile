@@ -2,7 +2,7 @@ from python:3.11
 
 # install deps
 run apt-get update -y
-run apt-get install -y git gcc
+run apt-get install -y git gcc patchelf
 run pip install pdm
 
 # build
