@@ -3,7 +3,7 @@ description = "School project programming language"
 homepage = "https://github.com/X-R-G-B/Leviator"
 license = "MIT"
 binaries = [
-    "bin/lvtc"
+    "bin/lvtc",
     "bin/lvtrun"
 ]
 name = "Leviator"
