@@ -69,11 +69,12 @@ class InstalledPackage:
             return
 
         print(f"Removing package: {self.name}")
+
         install_dir = os.path.join(conf.install_dir, self.name)
         remove_symlinks(conf.bin_dir, install_dir)
         shutil.rmtree(install_dir)
-        print(f"Removed package: {self.name}")
 
         datas.pop(self.name)
         with open(InstalledPackage.get_path_config(), "w") as f:
             toml.dump(datas, f)
+        print(f"Removed package: {self.name}")

@@ -8,6 +8,7 @@ import tomllib
 import zipfile
 from paq import add_symlinks, remove_symlinks
 from paq import MetaData
+from xdg_base_dirs import xdg_state_home
 
 import requests
 
@@ -17,6 +18,7 @@ class ConfInstall:
     install_dir: str
     bin_dir: str
     update: bool
+    no_update: bool
 
 
 @dataclasses.dataclass
@@ -28,28 +30,38 @@ class OnlinePackage:
     meta: Optional[MetaData] = None
 
     @staticmethod
+    def get_paq_packages() -> str:
+        p = os.path.join(xdg_state_home(), "paq", "paq-packages.toml")
+        os.makedirs(os.path.dirname(p), exist_ok=True)
+        return p
+
+    @staticmethod
     def get_all_packages(
-        owner: str = "Saverio976", repo: str = "paq", queries: List[str] = []
+        owner: str = "Saverio976", repo: str = "paq", queries: List[str] = [],
+        latest_paq: Optional[str] = None
     ) -> List["OnlinePackage"]:
         recompiled: List[re.Pattern] = []
         for query in queries:
             recompiled.append(re.compile(query))
-        g = Github()
-        packages = g.get_repo(owner + "/" + repo).get_latest_release().get_assets()
 
-        def is_packages_file(package) -> bool:
-            return package.name == "paq-packages.toml"
+        if latest_paq is None:
+            g = Github()
+            packages = g.get_repo(owner + "/" + repo).get_latest_release().get_assets()
 
-        package = list(filter(is_packages_file, packages))[0]
+            def is_packages_file(package) -> bool:
+                return package.name == "paq-packages.toml"
 
-        with open("/tmp/paq-packages.toml", "wb") as f:
-            with requests.get(
-                package.browser_download_url, allow_redirects=True, stream=True
-            ) as r:
-                r.raise_for_status()
-                for chunk in r.iter_content(chunk_size=8192):
-                    f.write(chunk)
-        with open("/tmp/paq-packages.toml", "rb") as f:
+            package = list(filter(is_packages_file, packages))[0]
+
+            with open(OnlinePackage.get_paq_packages(), "wb") as f:
+                with requests.get(
+                    package.browser_download_url, allow_redirects=True, stream=True
+                ) as r:
+                    r.raise_for_status()
+                    for chunk in r.iter_content(chunk_size=8192):
+                        f.write(chunk)
+
+        with open(OnlinePackage.get_paq_packages(), "rb") as f:
             datas = tomllib.load(f)
 
         def transform(name, package: dict) -> Optional[OnlinePackage]:
@@ -117,12 +129,21 @@ class OnlinePackage:
         return self.meta
 
     def install(self, conf: ConfInstall):
+        print(f"Installing package: {self.name}")
         download_target, tmpdir = self.__download_package()
-        self.get_metadata(download_target)  # add metadata to the attribute
+        datas = self.get_metadata(download_target)  # add metadata to the attribute
+        if len(datas.deps) > 0:
+            all_packages = OnlinePackage.get_all_packages(latest_paq=OnlinePackage.get_paq_packages())
+            conf_copy = ConfInstall(**dataclasses.asdict(conf), no_update=True)
+            for pak in all_packages:
+                if pak.name in datas.deps:
+                    pak.install(conf_copy)
         install_dir = os.path.join(conf.install_dir, self.name)
         try:
             os.makedirs(install_dir, exist_ok=False)
         except FileExistsError:
+            if conf.no_update:
+                return
             if not conf.update:
                 raise IsADirectoryError(f"Package {self.name} already exists")
             else:

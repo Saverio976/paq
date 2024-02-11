@@ -15,6 +15,7 @@ class MetaData:
     binaries: List[str]
     version: str
     name: str
+    deps: List[str]
 
     @staticmethod
     def from_dict(d: dict) -> "MetaData":
@@ -35,6 +36,12 @@ class MetaData:
             raise ValueError("version must be a string")
         if not isinstance(d["name"], str):
             raise ValueError("name must be a string")
+        if "deps" in d:
+            if not isinstance(d["deps"], list):
+                raise ValueError("deps must be a list of strings")
+            for dep in d["deps"]:
+                if not isinstance(dep, str):
+                    raise ValueError("deps must be a list of strings")
         return MetaData(
             author=d["author"],
             description=d["description"],
@@ -43,6 +50,7 @@ class MetaData:
             binaries=d["binaries"],
             version=d["version"],
             name=d["name"],
+            deps=d.get("deps", []),
         )
 
 
