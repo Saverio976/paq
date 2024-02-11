@@ -3,7 +3,7 @@ import os
 import re
 from rich_argparse import RawDescriptionRichHelpFormatter
 import sys
-from paq import PaqConf, ConfInstall, ConfRemove, OnlinePackage
+from paq import PaqConf, ConfInstall, ConfRemove, OnlinePackage, InstalledPackage
 
 if not sys.warnoptions and os.getenv("DEBUG", None) is not None:
     import warnings
@@ -27,6 +27,7 @@ def handler_install(conf: PaqConf, args: argparse.Namespace):
     pacakages_to_install = filter(lambda p: p.name in args.packages, packages)
     for package in pacakages_to_install:
         package.install(ConfInstall(conf.install_dir, conf.bin_dir, args.update))
+        InstalledPackage.add_package(package.name)
 
 
 def handler_update(conf: PaqConf, args: argparse.Namespace):
@@ -37,10 +38,10 @@ def handler_update(conf: PaqConf, args: argparse.Namespace):
 def handler_uninstall(conf: PaqConf, args: argparse.Namespace):
     conf.bin_dir = args.bin_dir
     conf.install_dir = args.install_dir
-    packages = OnlinePackage.get_all_packages(queries=args.packages)
+    packages = InstalledPackage.get_all_packages()
     pacakages_to_remove = filter(lambda p: p.name in args.packages, packages)
     for package in pacakages_to_remove:
-        package.uninstall(ConfRemove(conf.install_dir, conf.bin_dir))
+        package.remove_package(ConfRemove(conf.install_dir, conf.bin_dir))
 
 
 def handler_search(_: PaqConf, args: argparse.Namespace):

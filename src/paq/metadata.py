@@ -1,5 +1,9 @@
 import dataclasses
 from typing import List
+import stat
+import sys
+import os
+import tomllib
 
 
 @dataclasses.dataclass
@@ -39,4 +43,33 @@ class MetaData:
             binaries=d["binaries"],
             version=d["version"],
             name=d["name"],
+        )
+
+
+def remove_symlinks(bin_dir: str, install_dir_package: str):
+    with open(os.path.join(install_dir_package, "metadata.toml"), "rb") as meta:
+        data = MetaData.from_dict(tomllib.load(meta))
+    for binary in data.binaries:
+        try:
+            os.remove(os.path.join(bin_dir, os.path.basename(binary)))
+        except FileNotFoundError:
+            pass
+
+
+def add_symlinks(bin_dir: str, install_dir_package: str):
+    with open(os.path.join(install_dir_package, "metadata.toml"), "rb") as meta:
+        datas = MetaData.from_dict(tomllib.load(meta))
+    for binary in datas.binaries:
+        if sys.platform in ("linux", "darwin"):
+            os.chmod(
+                os.path.join(install_dir_package, binary),
+                stat.S_IXUSR
+                | stat.S_IRUSR
+                | stat.S_IXGRP
+                | stat.S_IRGRP
+                | stat.S_IXOTH,
+            )
+        os.symlink(
+            os.path.join(install_dir_package, binary),
+            os.path.join(bin_dir, os.path.basename(binary)),
         )

@@ -6,9 +6,7 @@ from github import Github
 import os
 import tomllib
 import zipfile
-import sys
-import stat
-import shutil
+from paq import add_symlinks, remove_symlinks
 from paq import MetaData
 
 import requests
@@ -19,12 +17,6 @@ class ConfInstall:
     install_dir: str
     bin_dir: str
     update: bool
-
-
-@dataclasses.dataclass
-class ConfRemove:
-    install_dir: str
-    bin_dir: str
 
 
 @dataclasses.dataclass
@@ -134,44 +126,12 @@ class OnlinePackage:
             if not conf.update:
                 raise IsADirectoryError(f"Package {self.name} already exists")
             else:
-                self.__remove_symlinks(conf.bin_dir, install_dir)
+                remove_symlinks(conf.bin_dir, install_dir)
                 os.removedirs(install_dir)
                 os.makedirs(install_dir)
         with zipfile.ZipFile(download_target, "r") as zipp:
             zipp.extractall(install_dir)
         os.remove(download_target)
-        self.__add_symlinks(conf.bin_dir, install_dir)
+        add_symlinks(conf.bin_dir, install_dir)
         print(f"Installed package: {self.name}")
         tmpdir.cleanup()
-
-    def __remove_symlinks(self, bin_dir: str, install_dir: str):
-        with open(os.path.join(install_dir, "metadata.toml"), "rb") as meta:
-            data = MetaData.from_dict(tomllib.load(meta))
-        for binary in data.binaries:
-            try:
-                os.remove(os.path.join(bin_dir, os.path.basename(binary)))
-            except FileNotFoundError:
-                pass
-
-    def __add_symlinks(self, bin_dir: str, install_dir: str):
-        for binary in self.get_metadata().binaries:
-            if sys.platform in ("linux", "darwin"):
-                os.chmod(
-                    os.path.join(install_dir, binary),
-                    stat.S_IXUSR
-                    | stat.S_IRUSR
-                    | stat.S_IXGRP
-                    | stat.S_IRGRP
-                    | stat.S_IXOTH,
-                )
-            os.symlink(
-                os.path.join(install_dir, binary),
-                os.path.join(bin_dir, os.path.basename(binary)),
-            )
-
-    def uninstall(self, conf: ConfRemove):
-        print(f"Removing package: {self.name}")
-        install_dir = os.path.join(conf.install_dir, self.name)
-        self.__remove_symlinks(conf.bin_dir, install_dir)
-        shutil.rmtree(install_dir)
-        print(f"Removed package: {self.name}")
