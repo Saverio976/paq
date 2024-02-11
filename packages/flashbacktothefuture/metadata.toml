@@ -1,0 +1,9 @@
+author = "X-L-R-G-B"
+description = "RPG Project - FlashBactToTheFuture"
+homepage = "https://github.com/X-R-G-B/FlashBackToTheFuture"
+license = "MIT"
+binaries = [
+    "bin/flashbacktothefuture",
+]
+name = "flashbacktothefuture"
+deps = []

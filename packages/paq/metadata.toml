@@ -6,3 +6,4 @@ binaries = [
     "bin/paq"
 ]
 name = "paq"
+deps = []
