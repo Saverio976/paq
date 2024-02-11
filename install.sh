@@ -84,7 +84,7 @@ fi
 if [ -f "metadata.toml" ]; then
     rm metadata.toml
 fi
-if [ -f "bin/paq"]; then
+if [ -f "bin/paq" ]; then
     rm bin/paq
 fi
 if [ "$in_created_dir" -eq "1" ]; then
