@@ -6,4 +6,4 @@ binaries = [
     "bin/lvtc",
     "bin/lvtrun"
 ]
-name = "Leviator"
+name = "leviator"

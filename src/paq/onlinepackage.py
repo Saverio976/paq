@@ -51,7 +51,7 @@ class OnlinePackage:
 
         package = list(filter(is_packages_file, packages))[0]
 
-        with open("/tmp/paq-packages.toml", "w") as f:
+        with open("/tmp/paq-packages.toml", "wb") as f:
             with requests.get(package.browser_download_url, allow_redirects=True, stream=True) as r:
                 r.raise_for_status()
                 for chunk in r.iter_content(chunk_size=8192):
@@ -80,6 +80,8 @@ class OnlinePackage:
             pack = transform(key, value)
             if pack is not None:
                 new_packages.append(pack)
+        print(f"Found {len(new_packages)} packages")
+        print(new_packages)
 
         return new_packages
 
