@@ -38,10 +38,13 @@ jobs:
     permissions: write-all
     name: Generate Metas
     runs-on: ubuntu-latest
-    container: python:3.11
     needs: generate-packages
     steps:
       - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11' 
 
       - name: Install deps
         run: pip install -r ./.github/workflows/requirements_generate_metadata.txt

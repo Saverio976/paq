@@ -13,6 +13,7 @@ with open(PACKAGES_FILE, "w") as f:
 packages = g.get_repo("Saverio976/paq").get_latest_release().get_assets()
 
 for package in packages:
+    print(package.name, "...")
     target_dowload_zip = os.path.join("/tmp", package.name) + ".zip"
     with open(target_dowload_zip, "wb") as f:
         with requests.get(package.browser_download_url, allow_redirects=True, stream=True) as r:
@@ -30,3 +31,4 @@ for package in packages:
         f.write(f"[packages.{data['name']}]\n")
         f.write(f"version = \"{data['version']}\"\n")
         f.write(f"download_url = \"{package.browser_download_url}\"\n")
+    print(f"Done: {data['name']}")
