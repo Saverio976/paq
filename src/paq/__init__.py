@@ -5,5 +5,7 @@ from .paqconf import PaqConf
 __all__ = [
     "PaqConf",
     "MetaData",
-    "ConfInstall", "ConfRemove", "OnlinePackage",
+    "ConfInstall",
+    "ConfRemove",
+    "OnlinePackage",
 ]

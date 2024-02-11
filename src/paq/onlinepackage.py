@@ -13,6 +13,7 @@ from paq import MetaData
 
 import requests
 
+
 @dataclasses.dataclass
 class ConfInstall:
     install_dir: str
@@ -25,6 +26,7 @@ class ConfRemove:
     install_dir: str
     bin_dir: str
 
+
 @dataclasses.dataclass
 class OnlinePackage:
     name: str
@@ -33,7 +35,9 @@ class OnlinePackage:
     meta: Optional[MetaData] = None
 
     @staticmethod
-    def get_all_packages(owner: str = "Saverio976", repo: str = "paq") -> List["OnlinePackage"]:
+    def get_all_packages(
+        owner: str = "Saverio976", repo: str = "paq"
+    ) -> List["OnlinePackage"]:
         g = Github()
         packages = g.get_repo(owner + "/" + repo).get_latest_release().get_assets()
 
@@ -48,7 +52,9 @@ class OnlinePackage:
                 content_type=package.content_type,
             )
 
-        def filter_ok(packages: Iterable[Optional[OnlinePackage]]) -> List[OnlinePackage]:
+        def filter_ok(
+            packages: Iterable[Optional[OnlinePackage]],
+        ) -> List[OnlinePackage]:
             new_packages = []
             for package in packages:
                 if package is not None:
@@ -79,7 +85,6 @@ class OnlinePackage:
                 self.meta = MetaData.from_dict(tomllib.load(meta))
         tmpdir.cleanup()
         return self.meta
-
 
     def install(self, conf: ConfInstall):
         download_target, tmpdir = self.__download_package()

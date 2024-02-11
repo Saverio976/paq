@@ -26,9 +26,7 @@ def handler_install(conf: PaqConf, args: argparse.Namespace):
     packages = OnlinePackage.get_all_packages()
     pacakages_to_install = filter(lambda p: p.name in args.packages, packages)
     for package in pacakages_to_install:
-        package.install(
-            ConfInstall(conf.install_dir, conf.bin_dir, args.update)
-        )
+        package.install(ConfInstall(conf.install_dir, conf.bin_dir, args.update))
 
 
 def handler_update(conf: PaqConf, args: argparse.Namespace):
