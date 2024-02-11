@@ -4,11 +4,14 @@ from haskell:9.6.3
 run apt-get update -y
 run apt-get install -y git
 
-# build
+# use add to invalidate cache if sources has changed
+ADD https://github.com/X-R-G-B/Leviator/archive/refs/heads/main.zip /tmp/sum
 run git clone https://github.com/X-R-G-B/Leviator.git /leviator
 workdir /leviator
 run git checkout main
 run ./scripts/InstallDepsLinux.bash
+
+# build
 run make
 
 # generate files packaged to a temporary directory

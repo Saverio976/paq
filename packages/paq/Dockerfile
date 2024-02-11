@@ -6,7 +6,7 @@ run apt-get install -y git gcc patchelf
 run pip install pdm
 
 # use add to invalidate cache if sources has changed
-ADD https://github.com/Saverio976/Raytracer/archive/refs/heads/main.zip /tmp/sum
+ADD https://github.com/Saverio976/paq/archive/refs/heads/main.zip /tmp/sum
 run git clone https://github.com/Saverio976/paq.git /paq
 workdir /paq
 run git checkout main
