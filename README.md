@@ -23,3 +23,30 @@ paq uninstall <package>
 paq search '.' # list all packages
 paq search 'p.t|l' # regex search
 ```
+
+## Install
+
+1. Dependencies
+
+  - curl/wget
+  - unzip
+
+2. Install
+
+  - download the [install.sh](https://raw.githubusercontent.com/Saverio976/paq/main/install.sh) script.
+  - take a look at what it does.
+  - run it.
+
+<details>
+  <summary>One Line Script if you trust the author</summary>
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Saverio976/paq/main/install.sh | \
+  BIN_DIR="$HOME/.local/bin" bash
+```
+
+</details>
+
+```bash
+
+```
