@@ -57,3 +57,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release upload "${{ github.event.release.tag_name }}" "/tmp/paq-packages.toml"
 
+      - name: Add failed package
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [[ -f /tmp/paq-packages.log ]] && [[ "$(cat /tmp/paq-packages.log)" != "" ]]; then
+            gh release view --json body --jq '.body' > notes.txt
+            echo "---" >> notes.txt
+            cat /tmp/paq-packages.log >> notes.txt
+            gh release edit "${{ github.event.release.tag_name }}" --notes-file notes.txt
+          fi
