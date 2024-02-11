@@ -55,6 +55,8 @@ build_package() {
         echo "Failed to build $FILE" >> "/tmp/packages-failed.log"
         cat "$LOG_FILE"
         status=1
+    else
+        echo "Built $FILE: OK"
     fi
     NB_CONCURRENT_NOW=$((NB_CONCURRENT_NOW-1))
     return "$status"
