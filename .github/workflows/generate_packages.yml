@@ -12,6 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Cache Docker images.
+        uses: ScribeMD/docker-cache@0.3.7
+        with:
+          key: docker-ubuntu-${{ hashFiles('**/Dockerfile') }}
+
       - name: Generate Packages
         run: .github/workflows/generate_packages.sh
 

@@ -5,11 +5,15 @@ run apt-get update -y
 run apt-get install -y git gcc patchelf
 run pip install pdm
 
-# build
+# use add to invalidate cache if sources has changed
+ADD https://github.com/Saverio976/Raytracer/archive/refs/heads/main.zip /tmp/sum
 run git clone https://github.com/Saverio976/paq.git /paq
 workdir /paq
 run git checkout main
+run git checkout "$(git describe main --tags --abbrev=0)"
 run pdm install
+
+# build
 run pdm run build
 
 # generate files packaged to a temporary directory
