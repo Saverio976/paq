@@ -32,6 +32,7 @@ class OnlinePackage:
     name: str
     download_url: str
     content_type: str
+    meta_download_url: str = ""
     meta: Optional[MetaData] = None
 
     @staticmethod
@@ -69,9 +70,9 @@ class OnlinePackage:
             raise ValueError(f"Unexpected content type: {self.content_type}")
         tmpdir = tempfile.TemporaryDirectory(prefix="paq", suffix=self.name)
         download_target = os.path.join(tmpdir.name, self.name) + ".zip"
-        with requests.get(self.download_url, allow_redirects=True, stream=True) as r:
-            r.raise_for_status()
-            with open(download_target, "wb") as f:
+        with open(download_target, "wb") as f:
+            with requests.get(self.download_url, allow_redirects=True, stream=True) as r:
+                r.raise_for_status()
                 for chunk in r.iter_content(chunk_size=8192):
                     f.write(chunk)
         return download_target, tmpdir

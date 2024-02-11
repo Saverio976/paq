@@ -5,7 +5,7 @@ on:
     types: [published]
 
 jobs:
-  generate:
+  generate-packages:
     permissions: write-all
     name: Generate Packages
     runs-on: ubuntu-latest
@@ -33,3 +33,24 @@ jobs:
             cat /tmp/packages-failed.log >> notes.txt
             gh release edit "${{ github.event.release.tag_name }}" --notes-file notes.txt
           fi
+
+  generate-metas:
+    permissions: write-all
+    name: Generate Metas
+    runs-on: ubuntu-latest
+    images: python:3.11
+    needs: generate-packages
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install deps
+        run: pip install -r ./github/workflows/requirements_generate_metadata.txt
+
+      - name: Generate Metas
+        run: python .github/workflows/generate_metadata.py
+
+      - name: Upload meta
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "${{ github.event.release.tag_name }}" "/tmp/paq-packages.toml"
+
