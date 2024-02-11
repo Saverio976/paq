@@ -1,9 +1,8 @@
 import dataclasses
 import re
 import tempfile
-from typing import List, Optional, Iterable, Tuple
+from typing import List, Optional, Tuple
 from github import Github
-from pathlib import Path
 import os
 import tomllib
 import zipfile
@@ -38,11 +37,11 @@ class OnlinePackage:
 
     @staticmethod
     def get_all_packages(
-        owner: str = "Saverio976", repo: str = "paq", query: Optional[str] = None
+        owner: str = "Saverio976", repo: str = "paq", queries: List[str] = []
     ) -> List["OnlinePackage"]:
-        recompiled: Optional[re.Pattern] = None
-        if query is not None:
-            recompiled = re.compile(query)
+        recompiled: List[re.Pattern] = []
+        for query in queries:
+            recompiled.append(re.compile(query))
         g = Github()
         packages = g.get_repo(owner + "/" + repo).get_latest_release().get_assets()
 
@@ -52,7 +51,9 @@ class OnlinePackage:
         package = list(filter(is_packages_file, packages))[0]
 
         with open("/tmp/paq-packages.toml", "wb") as f:
-            with requests.get(package.browser_download_url, allow_redirects=True, stream=True) as r:
+            with requests.get(
+                package.browser_download_url, allow_redirects=True, stream=True
+            ) as r:
                 r.raise_for_status()
                 for chunk in r.iter_content(chunk_size=8192):
                     f.write(chunk)
@@ -60,12 +61,25 @@ class OnlinePackage:
             datas = tomllib.load(f)
 
         def transform(name, package: dict) -> Optional[OnlinePackage]:
-            if recompiled is not None:
-                if recompiled.match(name) is None:
-                    return None
-            if package.get("content_type", None) != "application/zip" or package.get("download_url", None) is None or package.get("version", None) is None:
+            is_ok = True
+            if len(recompiled) > 0:
+                is_ok = False
+                for com in recompiled:
+                    if com.match(name) is not None:
+                        is_ok = True
+                        break
+            if not is_ok:
                 return None
-            if not isinstance(package["version"], str) or not isinstance(package["download_url"], str):
+
+            if (
+                package.get("content_type", None) != "application/zip"
+                or package.get("download_url", None) is None
+                or package.get("version", None) is None
+            ):
+                return None
+            if not isinstance(package["version"], str) or not isinstance(
+                package["download_url"], str
+            ):
                 return None
 
             return OnlinePackage(
@@ -80,8 +94,6 @@ class OnlinePackage:
             pack = transform(key, value)
             if pack is not None:
                 new_packages.append(pack)
-        print(f"Found {len(new_packages)} packages")
-        print(new_packages)
 
         return new_packages
 
@@ -91,7 +103,9 @@ class OnlinePackage:
         tmpdir = tempfile.TemporaryDirectory(prefix="paq", suffix=self.name)
         download_target = os.path.join(tmpdir.name, self.name) + ".zip"
         with open(download_target, "wb") as f:
-            with requests.get(self.download_url, allow_redirects=True, stream=True) as r:
+            with requests.get(
+                self.download_url, allow_redirects=True, stream=True
+            ) as r:
                 r.raise_for_status()
                 for chunk in r.iter_content(chunk_size=8192):
                     f.write(chunk)
@@ -112,7 +126,7 @@ class OnlinePackage:
 
     def install(self, conf: ConfInstall):
         download_target, tmpdir = self.__download_package()
-        self.get_metadata(download_target) # add metadata to the attribute
+        self.get_metadata(download_target)  # add metadata to the attribute
         install_dir = os.path.join(conf.install_dir, self.name)
         try:
             os.makedirs(install_dir, exist_ok=False)

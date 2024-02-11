@@ -23,7 +23,7 @@ def handler_config_set(conf: PaqConf, args: argparse.Namespace):
 def handler_install(conf: PaqConf, args: argparse.Namespace):
     conf.bin_dir = args.bin_dir
     conf.install_dir = args.install_dir
-    packages = OnlinePackage.get_all_packages()
+    packages = OnlinePackage.get_all_packages(queries=args.packages)
     pacakages_to_install = filter(lambda p: p.name in args.packages, packages)
     for package in pacakages_to_install:
         package.install(ConfInstall(conf.install_dir, conf.bin_dir, args.update))
@@ -37,19 +37,16 @@ def handler_update(conf: PaqConf, args: argparse.Namespace):
 def handler_uninstall(conf: PaqConf, args: argparse.Namespace):
     conf.bin_dir = args.bin_dir
     conf.install_dir = args.install_dir
-    packages = OnlinePackage.get_all_packages()
+    packages = OnlinePackage.get_all_packages(queries=args.packages)
     pacakages_to_remove = filter(lambda p: p.name in args.packages, packages)
     for package in pacakages_to_remove:
         package.uninstall(ConfRemove(conf.install_dir, conf.bin_dir))
 
 
 def handler_search(_: PaqConf, args: argparse.Namespace):
-    packages = OnlinePackage.get_all_packages()
-    queries = list(map(re.compile, args.query))
+    packages = OnlinePackage.get_all_packages(queries=args.query)
     for package in packages:
-        for query in queries:
-            if query.match(package.name) is not None:
-                print(package.name)
+        print(package.name, package.version)
 
 
 def create_parser(conf: PaqConf) -> argparse.ArgumentParser:
