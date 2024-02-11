@@ -8,6 +8,6 @@ PATH_BIN=$(dirname "$PATH_BIN")
 
 (
     cd "$PATH_BIN"
-    chmod +x ./bin/my_rpg
-    exec ./bin/my_rpg
+    chmod +x ./my_rpg
+    exec ./my_rpg
 )
