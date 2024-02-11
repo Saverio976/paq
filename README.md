@@ -37,6 +37,10 @@ paq search 'p.t|l' # regex search
   - take a look at what it does.
   - run it.
 
+  If you set the env variable `BIN_DIR`, binaries will be symlinked there.
+
+  If you set the env variable `INSTALL_DIR`, packages will be installed there.
+
 <details>
   <summary>One Line Script if you trust the author</summary>
 
@@ -46,7 +50,3 @@ curl -fsSL https://raw.githubusercontent.com/Saverio976/paq/main/install.sh | \
 ```
 
 </details>
-
-```bash
-
-```
