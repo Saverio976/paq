@@ -26,7 +26,18 @@ build-backend = "pdm.backend"
 distribution = true
 
 [tool.pdm.scripts]
-build = "pdm run nuitka3 --follow-imports --standalone --onefile src/paq"
+build = """
+pdm run nuitka3
+ --company-name=Saverio976
+ --enable-plugins=no-qt
+ --enable-plugins=upx
+ --product-name=paq
+ --follow-imports
+ --standalone
+ --onefile
+ --onefile-tempdir-spec='{CACHE_DIR}/{COMPANY}/{PRODUCT}/unpack'
+ src/paq
+"""
 run = "python ./src/paq"
 
 [tool.pdm.dev-dependencies]

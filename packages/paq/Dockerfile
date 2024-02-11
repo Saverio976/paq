@@ -2,7 +2,7 @@ from python:3.11
 
 # install deps
 run apt-get update -y
-run apt-get install -y git gcc patchelf
+run apt-get install -y git gcc patchelf ccache upx
 run pip install pdm
 
 # use add to invalidate cache if sources has changed
