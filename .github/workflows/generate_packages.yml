@@ -38,7 +38,7 @@ jobs:
     permissions: write-all
     name: Generate Metas
     runs-on: ubuntu-latest
-    images: python:3.11
+    container: python:3.11
     needs: generate-packages
     steps:
       - uses: actions/checkout@v3
