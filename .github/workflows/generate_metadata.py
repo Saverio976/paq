@@ -17,9 +17,11 @@ with open(LOG_FILE, "w") as f:
 
 packages = g.get_repo("Saverio976/paq").get_latest_release().get_assets()
 
+
 def log_error(message):
     with open(LOG_FILE, "a") as f:
         f.write(message + "\n")
+
 
 def verify_metadata(data):
     if "author" not in data or not isinstance(data["author"], str):
@@ -41,11 +43,14 @@ def verify_metadata(data):
         return False
     return True
 
+
 for package in packages:
     print(package.name, "...")
     target_dowload_zip = os.path.join("/tmp", package.name) + ".zip"
     with open(target_dowload_zip, "wb") as f:
-        with requests.get(package.browser_download_url, allow_redirects=True, stream=True) as r:
+        with requests.get(
+            package.browser_download_url, allow_redirects=True, stream=True
+        ) as r:
             r.raise_for_status()
             for chunk in r.iter_content(chunk_size=8192):
                 f.write(chunk)
@@ -65,6 +70,6 @@ for package in packages:
     with open(PACKAGES_FILE, "a") as f:
         f.write(f"[packages.{data['name']}]\n")
         f.write(f"version = \"{data['version']}\"\n")
-        f.write(f"download_url = \"{package.browser_download_url}\"\n")
-        f.write(f"content_type = \"{package.content_type}\"\n")
+        f.write(f'download_url = "{package.browser_download_url}"\n')
+        f.write(f'content_type = "{package.content_type}"\n')
     print(f"Done: {data['name']}")
