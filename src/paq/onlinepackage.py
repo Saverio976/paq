@@ -1,5 +1,6 @@
 import dataclasses
 import re
+import shutil
 import tempfile
 from typing import List, Optional, Tuple
 from github import Github
@@ -148,7 +149,7 @@ class OnlinePackage:
                 raise IsADirectoryError(f"Package {self.name} already exists")
             else:
                 remove_symlinks(conf.bin_dir, install_dir)
-                os.removedirs(install_dir)
+                shutil.rmtree(install_dir)
                 os.makedirs(install_dir)
         with zipfile.ZipFile(download_target, "r") as zipp:
             zipp.extractall(install_dir)
