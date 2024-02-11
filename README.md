@@ -50,3 +50,9 @@ curl -fsSL https://raw.githubusercontent.com/Saverio976/paq/main/install.sh | \
 ```
 
 </details>
+
+## Uninstall
+
+```
+paq uninstall paq
+```

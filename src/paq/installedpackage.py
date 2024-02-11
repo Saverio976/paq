@@ -52,6 +52,13 @@ class InstalledPackage:
             toml.dump(datas, f)
 
     def remove_package(self, conf: ConfRemove):
+        # remove all packages if uninstall paq
+        if self.name == "paq":
+            for package in self.get_all_packages():
+                if package.name == "paq":
+                    continue
+                package.remove_package(conf)
+
         try:
             with open(InstalledPackage.get_path_config(), "rb") as f:
                 datas = tomllib.load(f)
