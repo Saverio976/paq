@@ -1,6 +1,4 @@
-from epitechcontent/epitest-docker:latest
-
-run dnf install -y git cmake gcc glibc-static curl unzip g++ flac-devel libogg-devel libvorbis-devel libX11-devel libXrandr-devel mesa-dri-drivers mesa-libGL-devel libgudev-devel freetype-devel.x86_64 openal-soft-devel.x86_64
+from docker.io/epitechcontent/epitest-docker:latest
 
 # use add to invalidate cache if sources has changed
 ADD https://github.com/X-R-G-B/FlashBackToTheFuture/archive/refs/heads/main.zip /tmp/sum
@@ -9,8 +7,6 @@ workdir /flashbacktothefuture
 run git checkout main
 
 # build
-# COPY ./build-csfml.sh /tmp/build-csfml.sh
-# run bash /tmp/build-csfml.sh
 run make
 
 # generate files packaged to a temporary directory

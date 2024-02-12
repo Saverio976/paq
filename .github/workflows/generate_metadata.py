@@ -45,6 +45,8 @@ def verify_metadata(data):
 
 
 for package in packages:
+    if package.name == "paq-packages.toml":
+        continue
     print(package.name, "...")
     target_dowload_zip = os.path.join("/tmp", package.name) + ".zip"
     with open(target_dowload_zip, "wb") as f:
