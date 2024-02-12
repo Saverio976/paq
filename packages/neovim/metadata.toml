@@ -1,0 +1,9 @@
+author = "neovim"
+description = "Vim-fork focused on extensibility and usability"
+homepage = "https://neovim.io/"
+license = "Apache-2.0"
+binaries = [
+    "bin/nvim"
+]
+name = "neovim"
+deps = []
