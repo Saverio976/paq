@@ -21,8 +21,8 @@ def handler_config_set(conf: PaqConf, args: argparse.Namespace):
 
 
 def handler_install(conf: PaqConf, args: argparse.Namespace):
-    conf.bin_dir = args.bin_dir
-    conf.install_dir = args.install_dir
+    conf.bin_dir = args.bin_dir[0]
+    conf.install_dir = args.install_dir[0]
     packages = OnlinePackage.get_all_packages(queries=args.packages)
     pacakages_to_install = filter(lambda p: p.name in args.packages, packages)
     for package in pacakages_to_install:
@@ -36,8 +36,8 @@ def handler_update(conf: PaqConf, args: argparse.Namespace):
 
 
 def handler_uninstall(conf: PaqConf, args: argparse.Namespace):
-    conf.bin_dir = args.bin_dir
-    conf.install_dir = args.install_dir
+    conf.bin_dir = args.bin_dir[0]
+    conf.install_dir = args.install_dir[0]
     packages = InstalledPackage.get_all_packages()
     pacakages_to_remove = filter(lambda p: p.name in args.packages, packages)
     for package in pacakages_to_remove:
@@ -57,7 +57,7 @@ def create_parser(conf: PaqConf) -> argparse.ArgumentParser:
     parser.add_argument(
         "--install-dir",
         nargs=1,
-        default=conf.install_dir,
+        default=[conf.install_dir],
         type=str,
         action="store",
         help="Specify where packages will be installed",
@@ -65,7 +65,7 @@ def create_parser(conf: PaqConf) -> argparse.ArgumentParser:
     parser.add_argument(
         "--bin-dir",
         nargs=1,
-        default=conf.bin_dir,
+        default=[conf.bin_dir],
         type=str,
         action="store",
         help="Specify where binaries will be symlinked",
