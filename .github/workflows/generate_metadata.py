@@ -3,6 +3,7 @@ import os
 import requests
 import zipfile
 import pathlib
+import re
 from github import Github
 
 g = Github()
@@ -22,6 +23,7 @@ def log_error(message):
     with open(LOG_FILE, "a") as f:
         f.write(message + "\n")
 
+reg = re.compile(r"[a-zA-Z0-9]{2,}")
 
 def verify_metadata(data):
     if "author" not in data or not isinstance(data["author"], str):
@@ -40,6 +42,17 @@ def verify_metadata(data):
     if "name" not in data or not isinstance(data["name"], str):
         return False
     if "version" not in data or not isinstance(data["version"], str):
+        return False
+    if "deps" in data:
+        if not isinstance(data["deps"], list):
+            return False
+        for dep in data["deps"]:
+            if not isinstance(dep, str):
+                return False
+    match = reg.match(data["name"])
+    if match is None:
+        return False
+    if match.start() != 0 or match.end() != len(data["name"]):
         return False
     return True
 
