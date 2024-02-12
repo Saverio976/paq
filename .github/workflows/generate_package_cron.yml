@@ -22,7 +22,7 @@ jobs:
           tag_name=$(gh release view --json name --jq '.name')
             gh release view --json body --jq '.body' > notes.txt
             echo "---" >> notes.txt
-            echo "## Cron update $(date +%Y-%m-%d %H:%M)" >> notes.txt
+            echo "## Cron update $(date '+%Y-%m-%d %H:%M')" >> notes.txt
             echo "" >> notes.txt
             gh release edit "$tag_name" --notes-file notes.txt
 
