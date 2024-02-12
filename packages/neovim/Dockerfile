@@ -10,8 +10,8 @@ run curl -Lo /tmp/README.md https://raw.githubusercontent.com/neovim/neovim/mast
 run curl -Lo /tmp/LICENSE https://raw.githubusercontent.com/neovim/neovim/master/LICENSE.txt
 
 # generate files packaged to a temporary directory
-run mkdir -p /tmp/out/bin
-run cp /tmp/nvim-linux64/bin/nvim /tmp/out/bin/nvim
+run mkdir -p /tmp/out
+run cp -r /tmp/nvim-linux64/* /tmp/out/
 run cp /tmp/README.md /tmp/out/README.md
 run cp /tmp/LICENSE /tmp/out/LICENSE
 COPY ./metadata.toml /tmp/out/metadata.toml
