@@ -3,6 +3,9 @@ name: Generate Packages (Cron)
 on:
   schedule:
     - cron: '0 0 * * *'
+  push:
+    branches:
+      - main
 
 jobs:
   add-cron-message:
