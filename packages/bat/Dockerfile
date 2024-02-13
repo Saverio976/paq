@@ -12,6 +12,7 @@ run mkdir -p /tmp/out/bin
 run cp -r /tmp/bat/bat /tmp/out/bin/bat
 run cp /tmp/bat/README.md /tmp/out/README.md
 run cp /tmp/bat/LICENSE-MIT /tmp/out/LICENSE
+run cp -r /tmp/fd/autocomplete /tmp/out/autocomplete
 COPY ./metadata.toml /tmp/out/metadata.toml
 run echo "version = \"$(/tmp/out/bin/bat --version | cut -d' ' -f2 | tr -d '\n')\"" >> /tmp/out/metadata.toml
 
