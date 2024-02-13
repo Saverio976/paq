@@ -1,0 +1,10 @@
+author = "Microsoft"
+description = "Code Editing. Redefined"
+homepage = "https://code.visualstudio.com/"
+license = "MICROSOFT SOFTWARE LICENSE"
+binaries = [
+    "bin/code",
+    "bin/code-tunnel"
+]
+name = "visualstudiocode"
+deps = []
