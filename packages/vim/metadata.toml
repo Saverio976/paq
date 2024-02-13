@@ -1,0 +1,9 @@
+author = "Saverio976"
+description = "highly configurable text editor"
+homepage = "https://www.vim.org"
+license = "Vim License"
+binaries = [
+    "bin/vim"
+]
+name = "vim"
+deps = []
