@@ -1,0 +1,9 @@
+author = "eza-community"
+description = "A modern, maintained replacement for ls"
+homepage = "https://eza.rocks/"
+license = "MIT"
+binaries = [
+    "bin/eza",
+]
+name = "eza"
+deps = []
