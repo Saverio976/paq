@@ -1,0 +1,9 @@
+author = "sharkdp"
+description = "A cat(1) clone with wings."
+homepage = "https://github.com/sharkdp/bat"
+license = "MIT"
+binaries = [
+    "bin/bat",
+]
+name = "bat"
+deps = []
