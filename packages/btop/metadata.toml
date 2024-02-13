@@ -1,0 +1,9 @@
+author = "aristocratos"
+description = "A monitor of resources"
+homepage = "https://github.com/aristocratos/btop"
+license = "Apache-2.0"
+binaries = [
+    "bin/btop",
+]
+name = "btop"
+deps = []
