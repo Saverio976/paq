@@ -12,7 +12,7 @@ run chmod +x /tmp/eza
 
 # generate files packaged to a temporary directory
 run mkdir -p /tmp/out/bin
-run cp -r /tmp/eza /tmp/out/bin/eza
+run cp /tmp/eza /tmp/out/bin/eza
 run cp /tmp/README.md /tmp/out/README.md
 run cp /tmp/LICENSE /tmp/out/LICENSE
 COPY ./metadata.toml /tmp/out/metadata.toml

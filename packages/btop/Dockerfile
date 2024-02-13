@@ -9,7 +9,7 @@ run tar xf /tmp/btop.tbz -C /tmp
 
 # generate files packaged to a temporary directory
 run mkdir -p /tmp/out/bin
-run cp -r /tmp/btop/bin/btop /tmp/out/bin/btop
+run cp /tmp/btop/bin/btop /tmp/out/bin/btop
 run cp /tmp/btop/README.md /tmp/out/README.md
 run cp /tmp/btop/LICENSE /tmp/out/LICENSE
 COPY ./metadata.toml /tmp/out/metadata.toml

@@ -9,7 +9,7 @@ run bash /tmp/install.sh
 
 # generate files packaged to a temporary directory
 run mkdir -p /tmp/out/bin
-run cp -r /tmp/bat/bat /tmp/out/bin/bat
+run cp /tmp/bat/bat /tmp/out/bin/bat
 run cp /tmp/bat/README.md /tmp/out/README.md
 run cp /tmp/bat/LICENSE-MIT /tmp/out/LICENSE
 run cp -r /tmp/bat/autocomplete /tmp/out/autocomplete
