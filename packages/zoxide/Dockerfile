@@ -12,7 +12,7 @@ run mkdir -p /tmp/out/bin
 run cp /tmp/zoxide /tmp/out/bin/zoxide
 run cp /tmp/README.md /tmp/out/README.md
 run cp /tmp/LICENSE /tmp/out/LICENSE
-run cp -r /tmp/zoxide/completions /tmp/out/completions
+run cp -r /tmp/completions /tmp/out/completions
 COPY ./metadata.toml /tmp/out/metadata.toml
 run echo "version = \"$(/tmp/out/bin/zoxide --version | cut -d' ' -f2 | tr -d '\n')\"" >> /tmp/out/metadata.toml
 
