@@ -40,7 +40,7 @@ build_package() {
     # add cache for paq because it is slow to build paq itself
     # yeah i know, 'rewrite it in rust', "don't try to 'compile' python"
     DOCKER_ARGS_PAQ=""
-    if [[ "$FILE" == "paq" ]]; then
+    if [[ "$FILE" == "./packages/paq" ]]; then
         DOCKER_ARGS_PAQ="-v /tmp/cache-paq:/cache-paq"
     fi
     #--
