@@ -1,7 +1,7 @@
 from docker.io/epitechcontent/epitest-docker:latest
 
 # use add to invalidate cache if sources has changed
-run git clone https://github.com/X-R-G-B/FlashBackToTheFuture.git /flashbacktothefuture
+run git clone --depth 1 https://github.com/X-R-G-B/FlashBackToTheFuture.git /flashbacktothefuture
 workdir /flashbacktothefuture
 run git checkout main
 
