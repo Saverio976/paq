@@ -7,3 +7,4 @@ binaries = [
 ]
 name = "fd"
 deps = []
+chmod = []

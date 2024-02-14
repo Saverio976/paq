@@ -7,3 +7,4 @@ binaries = [
 ]
 name = "neovim"
 deps = []
+chmod = []

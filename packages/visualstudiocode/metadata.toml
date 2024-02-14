@@ -8,3 +8,6 @@ binaries = [
 ]
 name = "visualstudiocode"
 deps = []
+chmod = [
+    {path = "code", mode = "binary"}
+]

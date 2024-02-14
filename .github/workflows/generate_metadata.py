@@ -43,11 +43,20 @@ def verify_metadata(data):
         return False
     if "version" not in data or not isinstance(data["version"], str):
         return False
-    if "deps" in data:
-        if not isinstance(data["deps"], list):
+    if "deps" not in data or not isinstance(data["deps"], list):
+        return False
+    for dep in data["deps"]:
+        if not isinstance(dep, str):
             return False
-        for dep in data["deps"]:
-            if not isinstance(dep, str):
+    if "chmod" not in data or not isinstance(data["chmod"], list):
+        return False
+    for mod in data["chmod"]:
+        if not isinstance(mod, dict):
+            return False
+        for key, value in mod.items():
+            if key not in ("path", "mode"):
+                return False
+            if key == "mode" and value not in ("binary",):
                 return False
     match = reg.match(data["name"])
     if match is None:

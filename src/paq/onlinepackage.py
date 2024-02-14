@@ -9,6 +9,7 @@ import tomllib
 import zipfile
 from paq import add_symlinks, remove_symlinks
 from paq import MetaData
+from paq.metadata import apply_chmod
 from xdg_base_dirs import xdg_state_home
 
 import requests
@@ -154,6 +155,7 @@ class OnlinePackage:
         with zipfile.ZipFile(download_target, "r") as zipp:
             zipp.extractall(install_dir)
         os.remove(download_target)
+        apply_chmod(install_dir)
         add_symlinks(conf.bin_dir, install_dir)
         print(f"Installed package: {self.name}")
         tmpdir.cleanup()

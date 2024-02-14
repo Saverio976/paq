@@ -8,3 +8,4 @@ binaries = [
 ]
 name = "leviator"
 deps = []
+chmod = []

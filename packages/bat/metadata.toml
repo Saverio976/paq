@@ -7,3 +7,4 @@ binaries = [
 ]
 name = "bat"
 deps = []
+chmod = []

@@ -5,6 +5,10 @@ import sys
 import os
 import tomllib
 
+@dataclasses.dataclass
+class Chmod:
+    path: str
+    mode: str
 
 @dataclasses.dataclass
 class MetaData:
@@ -16,6 +20,7 @@ class MetaData:
     version: str
     name: str
     deps: List[str]
+    chmod: List[Chmod]
 
     @staticmethod
     def from_dict(d: dict) -> "MetaData":
@@ -36,12 +41,22 @@ class MetaData:
             raise ValueError("version must be a string")
         if not isinstance(d["name"], str):
             raise ValueError("name must be a string")
-        if "deps" in d:
-            if not isinstance(d["deps"], list):
+        if not isinstance(d["deps"], list):
+            raise ValueError("deps must be a list of strings")
+        for dep in d["deps"]:
+            if not isinstance(dep, str):
                 raise ValueError("deps must be a list of strings")
-            for dep in d["deps"]:
-                if not isinstance(dep, str):
-                    raise ValueError("deps must be a list of strings")
+        if not isinstance(d["chmod"], list):
+            raise ValueError("chmod must be list of {path = \"string\", mode = \"string\"}")
+        for file in d["chmod"]:
+            if not isinstance(file, dict):
+                raise ValueError("chmod must be list of {path = \"string\", mode = \"string\"}")
+            for key, value in file.items():
+                if key not in ("path", "mode"):
+                    raise ValueError("chmod must be list of {path = \"\", mode = \"\"}")
+                ok = ("binary",)
+                if value not in ok:
+                    raise ValueError("chmod mist be list of {path = \"string\", mode = \"string\"} and mode must be one of " + f"{ok}")
         return MetaData(
             author=d["author"],
             description=d["description"],
@@ -50,7 +65,8 @@ class MetaData:
             binaries=d["binaries"],
             version=d["version"],
             name=d["name"],
-            deps=d.get("deps", []),
+            deps=d["deps"],
+            chmod=list(map(lambda x: Chmod(path=x["path"], mode=x["mode"]), d["chmod"]))
         )
 
 
@@ -81,3 +97,17 @@ def add_symlinks(bin_dir: str, install_dir_package: str):
             os.path.join(install_dir_package, binary),
             os.path.join(bin_dir, os.path.basename(binary)),
         )
+
+def apply_chmod(install_dir_package: str):
+    with open(os.path.join(install_dir_package, "metadata.toml"), "rb") as meta:
+        datas = MetaData.from_dict(tomllib.load(meta))
+    for mod in datas.chmod:
+        if mod.mode == "binary" and sys.platform in ("linux", "darwin"):
+            os.chmod(
+                os.path.join(install_dir_package, mod.path),
+                stat.S_IXUSR
+                | stat.S_IRUSR
+                | stat.S_IXGRP
+                | stat.S_IRGRP
+                | stat.S_IXOTH,
+            )
