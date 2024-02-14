@@ -29,7 +29,7 @@ get_tmp_dir() {
 build_package() {
     FILE="$1"
     status=0
-    echo "Building $FILE"
+    echo "Building $FILE: ..."
     LOG_FILE="$(get_log "$FILE")"
     TMP_DIR="$(get_tmp_dir "$FILE")"
     TMP_ZIP="$(get_tmp_zip "$FILE")"
