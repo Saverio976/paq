@@ -3,7 +3,8 @@ description = "A smarter cd command. Supports all major shells."
 homepage = "https://github.com/ajeetdsouza/zoxide"
 license = "MIT"
 binaries = [
-    "bin/z",
+    "bin/z"
 ]
 name = "zoxide"
 deps = []
+chmod = []

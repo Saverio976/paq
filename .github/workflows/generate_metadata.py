@@ -4,9 +4,7 @@ import requests
 import zipfile
 import pathlib
 import re
-from github import Github
 
-g = Github()
 
 PACKAGES_FILE = "/tmp/paq-packages.toml"
 with open(PACKAGES_FILE, "w") as f:
@@ -16,84 +14,143 @@ LOG_FILE = "/tmp/paq-packages.log"
 with open(LOG_FILE, "w") as f:
     f.write("")
 
-packages = g.get_repo("Saverio976/paq").get_latest_release().get_assets()
+
+def log_error(log_to_file, message):
+    if log_to_file:
+        with open(LOG_FILE, "a") as f:
+            f.write(message + "\n")
+    else:
+        print(message)
 
 
-def log_error(message):
-    with open(LOG_FILE, "a") as f:
-        f.write(message + "\n")
+reg_expr = r"[a-zA-Z0-9]{2,}"
+reg = re.compile(reg_expr)
 
-reg = re.compile(r"[a-zA-Z0-9]{2,}")
 
-def verify_metadata(data):
+def verify_metadata(data, package, log_to_file):
     if "author" not in data or not isinstance(data["author"], str):
+        log_error(log_to_file, f"- {package}:: author must be string")
         return False
     if "description" not in data or not isinstance(data["description"], str):
+        log_error(log_to_file, f"- {package}:: description must be string")
         return False
     if "homepage" not in data or not isinstance(data["homepage"], str):
+        log_error(log_to_file, f"- {package}:: homepage must be string")
         return False
     if "license" not in data or not isinstance(data["license"], str):
+        log_error(log_to_file, f"- {package}:: license must be string")
         return False
     if "binaries" not in data or not isinstance(data["binaries"], list):
+        log_error(log_to_file, f"- {package}:: binaries must be list")
         return False
     for binary in data["binaries"]:
         if not isinstance(binary, str):
+            log_error(log_to_file, f"- {package}:: binaries must be list of string")
             return False
     if "name" not in data or not isinstance(data["name"], str):
+        log_error(log_to_file, f"- {package}:: name must be string")
         return False
     if "version" not in data or not isinstance(data["version"], str):
+        log_error(log_to_file, f"- {package}:: version must be string")
         return False
     if "deps" not in data or not isinstance(data["deps"], list):
+        log_error(log_to_file, f"- {package}:: deps must be list")
         return False
     for dep in data["deps"]:
         if not isinstance(dep, str):
+            log_error(log_to_file, f"- {package}:: deps must be list of string")
             return False
     if "chmod" not in data or not isinstance(data["chmod"], list):
+        log_error(log_to_file, f"- {package}:: chmod must be list")
         return False
     for mod in data["chmod"]:
-        if not isinstance(mod, dict):
+        if not isinstance(mod, dict) or len(mod.keys()) != 2:
+            log_error(
+                log_to_file,
+                f"- {package}:: chmod must be list of dict"
+                + ' {path = "string", mode = "string"}',
+            )
             return False
         for key, value in mod.items():
-            if key not in ("path", "mode"):
+            ok_key = ("path", "mode")
+            if key not in ok_key:
+                log_error(
+                    log_to_file,
+                    f"- {package}:: chmod must be list of dict with keys: {ok_key}",
+                )
                 return False
-            if key == "mode" and value not in ("binary",):
+            ok_mode = ("binary",)
+            if key == "mode" and value not in ok_mode:
+                log_error(log_to_file, f"- {package}:: chmod mode must be in {ok_mode}")
                 return False
+            if key == "path" and not isinstance(value, str):
+                log_error(log_to_file, f"- {package}:: chmod path must be string")
     match = reg.match(data["name"])
     if match is None:
+        log_error(
+            log_to_file, f"- {package}:: name must match regular expression: {reg_expr}"
+        )
         return False
     if match.start() != 0 or match.end() != len(data["name"]):
+        log_error(
+            log_to_file, f"- {package}:: name must match regular expression: {reg_expr}"
+        )
         return False
     return True
 
 
-for package in packages:
-    if package.name == "paq-packages.toml":
-        continue
-    print(package.name, "...")
-    target_dowload_zip = os.path.join("/tmp", package.name) + ".zip"
-    with open(target_dowload_zip, "wb") as f:
-        with requests.get(
-            package.browser_download_url, allow_redirects=True, stream=True
-        ) as r:
-            r.raise_for_status()
-            for chunk in r.iter_content(chunk_size=8192):
-                f.write(chunk)
-    try:
-        with zipfile.ZipFile(target_dowload_zip, "r") as zipp:
-            with zipp.open("metadata.toml") as meta:
-                data = tomllib.load(meta)
-    except Exception as esc:
-        log_error(f"Error in package {package.name}: {esc}")
-        continue
-    if not verify_metadata(data):
-        log_error(f"Error in package {package.name}: invalid metadata")
-        continue
-    if data["name"] != pathlib.Path(package.name).stem:
-        log_error(f"Error in package {package.name}: invalid name")
-        continue
-    with open(PACKAGES_FILE, "a") as f:
-        f.write(f"[packages.{data['name']}]\n")
-        f.write(f"version = \"{data['version']}\"\n")
-        f.write(f'download_url = "{package.browser_download_url}"\n')
-        f.write(f'content_type = "{package.content_type}"\n')
-    print(f"Done: {data['name']}")
+def process_package_local(file_metadata):
+    with open(file_metadata, "rb") as f:
+        datas = tomllib.load(f)
+    return verify_metadata(datas, file_metadata, False)
+
+
+def process_packages():
+    from github import Github
+
+    g = Github()
+    packages = g.get_repo("Saverio976/paq").get_latest_release().get_assets()
+
+    for package in packages:
+        if package.name == "paq-packages.toml":
+            continue
+        print(package.name, "...")
+        target_dowload_zip = os.path.join("/tmp", package.name) + ".zip"
+        with open(target_dowload_zip, "wb") as f:
+            with requests.get(
+                package.browser_download_url, allow_redirects=True, stream=True
+            ) as r:
+                r.raise_for_status()
+                for chunk in r.iter_content(chunk_size=8192):
+                    f.write(chunk)
+        try:
+            with zipfile.ZipFile(target_dowload_zip, "r") as zipp:
+                with zipp.open("metadata.toml") as meta:
+                    data = tomllib.load(meta)
+        except Exception as esc:
+            log_error(True, f"Error in package {package.name}: {esc}")
+            continue
+        if not verify_metadata(data, package.name, False):
+            continue
+        if data["name"] != pathlib.Path(package.name).stem:
+            log_error(
+                True,
+                f"Error in package {package.name}: name must be same as metadata and folder",
+            )
+            continue
+        with open(PACKAGES_FILE, "a") as f:
+            f.write(f"[packages.{data['name']}]\n")
+            f.write(f"version = \"{data['version']}\"\n")
+            f.write(f'download_url = "{package.browser_download_url}"\n')
+            f.write(f'content_type = "{package.content_type}"\n')
+        print(f"Done: {data['name']}")
+
+
+if __name__ == "__main__":
+    import sys
+
+    if len(sys.argv) == 2:
+        if process_package_local(sys.argv[1]) is False:
+            exit(1)
+    else:
+        process_packages()
