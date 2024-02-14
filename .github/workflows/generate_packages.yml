@@ -17,6 +17,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /tmp/cache-paq
+          key: ${{ runner.os }}-paq
 
       - name: Generate Packages
         run: .github/workflows/generate_packages.sh
