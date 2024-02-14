@@ -41,7 +41,14 @@ build_package() {
     # yeah i know, 'rewrite it in rust', "don't try to 'compile' python"
     DOCKER_ARGS_PAQ=""
     if [[ "$FILE" == "./packages/paq" ]]; then
-        DOCKER_ARGS_PAQ="-v /tmp/cache-paq:/cache-paq"
+        mkdir -p /tmp/cache-paq/build
+        mkdir -p /tmp/cache-paq/dist
+        mkdir -p /tmp/cache-paq/onefile-build
+        mkdir -p /tmp/cache-paq/venv
+        DOCKER_ARGS_PAQ="-v /tmp/cache-paq/build:/paq/paq.build"
+        DOCKER_ARGS_PAQ="$DOCKER_ARGS_PAQ -v /tmp/cache-paq/dist:/paq/paq.dist"
+        DOCKER_ARGS_PAQ="$DOCKER_ARGS_PAQ -v /tmp/cache-paq/onefile-build:/paq/paq.onefile-build"
+        DOCKER_ARGS_PAQ="$DOCKER_ARGS_PAQ -v /tmp/cache-paq/venv:/paq/.venv"
     fi
     #--
     (

@@ -1,9 +1,7 @@
-from python:3.11
+from debian:12-slim
 
 # install deps
-run apt-get update -y
-run apt-get install -y git gcc patchelf ccache
-run pip install pdm
+run apt-get update -y && apt-get install -y curl tar xz-utils python3 python3-venv python3-pip git gcc patchelf ccache && pip install --break-system-packages pdm
 
 run curl \
       -fsSL \
@@ -14,24 +12,9 @@ run curl \
     && rm -rf upx.tar.xz upx-4.2.2-amd64_linux
 
 # use add to invalidate cache if sources has changed
-ADD https://github.com/Saverio976/paq/archive/refs/heads/main.zip /tmp/sum
-run git clone https://github.com/Saverio976/paq.git /paq
+run git clone --single-branch --branch main https://github.com/Saverio976/paq.git /paq
 workdir /paq
-run git checkout main
-run git checkout "$(git describe main --tags --abbrev=0)"
 run pdm install
-
-run mkdir -p /cache-paq/paq.build
-run mkdir -p /cache-paq/paq.dist
-run mkdir -p /cache-paq/paq.onefile-build
-run mkdir -p /paq/paq.build
-run mkdir -p /paq/paq.dist
-run mkdir -p /paq/paq.onefile-build
-run ln -s /cache-paq/paq.build /paq/paq.build
-run ln -s /cache-paq/paq.dist /paq/paq.dist
-run ln -s /cache-paq/paq.onefile-build /paq/paq.onefile-build
-# build
-run pdm run build
 
 # generate files packaged to a temporary directory
 run mkdir -p /tmp/out/bin
