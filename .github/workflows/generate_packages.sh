@@ -5,7 +5,6 @@ mkdir -p /tmp/packages
 rm -rf /tmp/packages-failed.log
 
 MAX_CONCURRENT=10
-NB_CONCURRENT_NOW=0
 
 get_tmp_zip() {
     FILE="$1"
@@ -58,7 +57,6 @@ build_package() {
     else
         echo "Built $FILE: OK"
     fi
-    NB_CONCURRENT_NOW=$((NB_CONCURRENT_NOW-1))
     return "$status"
 }
 
@@ -66,12 +64,11 @@ for file in ./packages/*
 do
     if [ -d "$file" ]
     then
-        while [ "$NB_CONCURRENT_NOW" -ge "$MAX_CONCURRENT" ]
+        while [ "$(jobs -rp | wc -l)" -ge "$MAX_CONCURRENT" ]
         do
             sleep 1
         done
         build_package "$file" &
-        NB_CONCURRENT_NOW=$((NB_CONCURRENT_NOW+1))
     fi
 done
 
