@@ -1,0 +1,9 @@
+author = "ajeetdsouza"
+description = "A smarter cd command. Supports all major shells."
+homepage = "https://github.com/ajeetdsouza/zoxide"
+license = "MIT"
+binaries = [
+    "bin/z",
+]
+name = "zoxide"
+deps = []
