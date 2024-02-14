@@ -34,6 +34,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Cache paq build
+        id: cache-paq
+        uses: actions/cache@v4
+        with:
+          path: /tmp/cache-paq
+
       - name: Generate Packages
         run: .github/workflows/generate_packages.sh
 
