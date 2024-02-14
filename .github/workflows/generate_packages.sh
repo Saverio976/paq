@@ -37,6 +37,13 @@ build_package() {
     rm -rf "$TMP_DIR"
     rm -rf "$TMP_ZIP"
     rm -rf "$TMP_ZIP"
+    # add cache for paq because it is slow to build paq itself
+    # yeah i know, 'rewrite it in rust', "don't try to 'compile' python"
+    DOCKER_ARGS_PAQ=""
+    if [[ "$FILE" == "paq" ]]; then
+        DOCKER_ARGS_PAQ="-v /tmp/cache-paq:/cache-paq"
+    fi
+    #--
     (
         exec 3>&1 4>&2 > "$LOG_FILE" 2>&1
         set -ex
@@ -44,7 +51,7 @@ build_package() {
         cd "$FILE"
         mkdir "$TMP_DIR"
         docker build . -t "package-tmp-$(basename "$FILE")"
-        docker run --rm -v "$TMP_DIR:/out" "package-tmp-$(basename "$FILE")"
+        docker run --rm -v "$TMP_DIR:/out" $DOCKER_ARGS_PAQ "package-tmp-$(basename "$FILE")"
         (cd "$TMP_DIR" && zip -r "$TMP_ZIP" .)
         cp "$TMP_ZIP" "$TARGET_ZIP"
     )

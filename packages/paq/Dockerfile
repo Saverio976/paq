@@ -21,16 +21,24 @@ run git checkout main
 run git checkout "$(git describe main --tags --abbrev=0)"
 run pdm install
 
+run mkdir -p /cache-paq/paq.build
+run mkdir -p /cache-paq/paq.dist
+run mkdir -p /cache-paq/paq.onefile-build
+run mkdir -p /paq/paq.build
+run mkdir -p /paq/paq.dist
+run mkdir -p /paq/paq.onefile-build
+run ln -s /cache-paq/paq.build /paq/paq.build
+run ln -s /cache-paq/paq.dist /paq/paq.dist
+run ln -s /cache-paq/paq.onefile-build /paq/paq.onefile-build
 # build
 run pdm run build
 
 # generate files packaged to a temporary directory
 run mkdir -p /tmp/out/bin
-run cp ./paq.bin /tmp/out/bin/paq
-run cp ./README.md /tmp/out/README.md
-run cp ./LICENSE /tmp/out/LICENSE
 COPY ./metadata.toml /tmp/out/metadata.toml
 run echo "version = \"$(git describe main --tags --abbrev=0)\"" >> /tmp/out/metadata.toml
 
+COPY ./build.sh /build.sh
+
 # cmd
-cmd cp -r /tmp/out/* /out
+cmd bash /build.sh
