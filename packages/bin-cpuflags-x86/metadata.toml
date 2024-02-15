@@ -1,0 +1,10 @@
+author = "HanabishiRecca"
+description = "A small CLI tool to detect CPU flags (instruction sets) of X86 binaries."
+homepage = "https://github.com/HanabishiRecca/bin-cpuflags-x86"
+license = "MIT"
+binaries = [
+    "bin/bin-cpuflags-x86",
+]
+name = "bin-cpuflags-x86"
+deps = []
+chmod = []
