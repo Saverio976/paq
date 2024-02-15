@@ -14,10 +14,11 @@ run curl \
 # use add to invalidate cache if sources has changed
 run git clone --single-branch --branch main https://github.com/Saverio976/paq.git /paq
 workdir /paq
-run pdm install
 
 # generate files packaged to a temporary directory
 run mkdir -p /tmp/out/bin
+run cp /paq/README.md /tmp/out/README.md
+run cp /paq/LICENSE /tmp/out/LICENSE
 COPY ./metadata.toml /tmp/out/metadata.toml
 run echo "version = \"$(git describe main --tags --abbrev=0)\"" >> /tmp/out/metadata.toml
 
