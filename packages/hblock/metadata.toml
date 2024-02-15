@@ -1,0 +1,10 @@
+author = "Héctor Molinero Fernández"
+description = "Improve your security and privacy by blocking ads, tracking and malware domains."
+homepage = "https://hblock.molinero.dev/"
+license = "MIT"
+binaries = [
+    "bin/hblock",
+]
+name = "hblock"
+deps = []
+chmod = []
