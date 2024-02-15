@@ -3,12 +3,37 @@ name: Generate Packages
 on:
   release:
     types: [published]
+  schedule:
+    - cron: '0 0 * * *'
+  push:
+    branches:
+      - main
 
 jobs:
-  generate-packages:
+  starting-job:
     permissions: write-all
-    name: Generate Packages
+    name: Add Cron Message
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Add Cron Message
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag_name=$(gh release view --json name --jq '.name')
+          gh release view --json body --jq '.body' > notes.txt
+          echo "---" >> notes.txt
+          echo "## Starting Job $(date '+%Y-%m-%d %H:%M')" >> notes.txt
+          echo "" >> notes.txt
+          gh release edit "$tag_name" --notes-file notes.txt
+
+  generate-package-paq:
+    permissions: write-all
+    name: Generate Packages Paq
+    runs-on: ubuntu-latest
+    outputs:
+      failed: ${{ steps.failed.outputs.failed }}
     steps:
       - uses: actions/checkout@v3
 
@@ -29,6 +54,45 @@ jobs:
             ${{ runner.os }}-paq-
             ${{ runner.os }}-paq
 
+      - name: create path paq
+        run: mkdir -p /tmp/cache-paq
+
+      - name: Generate Package
+        run: .github/workflows/generate_package.sh "./packages/paq"
+
+      - name: create failed
+        id: failed
+        run: |
+          if [[ -f /tmp/packages-failed.log ]]; then
+            echo "failed=\"$(cat /tmp/packages-failed.log)\"" >> $GITHUB_OUTPUT
+          else
+            echo "failed=\"\"" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag_name=$(gh release view --json name --jq '.name')
+          for file in /tmp/packages/*.zip; do
+            gh release upload "$tag_name" "$file" --clobber
+          done
+
+  generate-package-darling:
+    permissions: write-all
+    name: Generate Packages Darling
+    outputs:
+      failed: ${{ steps.failed.outputs.failed }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "date=$(/bin/date -u '+%Y%m%d%H%M')" >> $GITHUB_OUTPUT
+        shell: bash
+
       - name: Cache darling build
         id: cache-darling
         uses: actions/cache@v4
@@ -40,39 +104,88 @@ jobs:
             ${{ runner.os }}-darling-
             ${{ runner.os }}-darling
 
-      - name: create path paq
-        run: mkdir -p /tmp/cache-paq
-
       - name: create path darling
         run: mkdir -p /tmp/cache-darling
 
-      - name: Generate Packages
-        run: .github/workflows/generate_packages.sh
+      - name: Generate Package
+        run: .github/workflows/generate_package.sh "./packages/darling"
+
+      - name: create failed
+        id: failed
+        run: |
+          if [[ -f /tmp/packages-failed.log ]]; then
+            echo "failed=\"$(cat /tmp/packages-failed.log)\"" >> $GITHUB_OUTPUT
+          else
+            echo "failed=\"\"" >> $GITHUB_OUTPUT
+          fi
 
       - name: Upload zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          tag_name=$(gh release view --json name --jq '.name')
           for file in /tmp/packages/*.zip; do
-            gh release upload "${{ github.event.release.tag_name }}" "$file"
+            gh release upload "$tag_name" "$file" --clobber
           done
 
+  generate-packages-1:
+    permissions: write-all
+    name: Generate Packages 1
+    outputs:
+      failed: ${{ steps.failed.outputs.failed }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Generate Package
+        run: .github/workflows/generate_packages.sh "./packages/paq" "./packages/darling"
+
+      - name: create failed
+        id: failed
+        run: |
+          if [[ -f /tmp/packages-failed.log ]]; then
+            echo "failed=\"$(cat /tmp/packages-failed.log)\"" >> $GITHUB_OUTPUT
+          else
+            echo "failed=\"\"" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag_name=$(gh release view --json name --jq '.name')
+          for file in /tmp/packages/*.zip; do
+            gh release upload "$tag_name" "$file" --clobber
+          done
+
+  generate-failed:
+    permissions: write-all
+    name: Generate Failed
+    runs-on: ubuntu-latest
+    needs: [generate-package-paq, generate-package-darling, generates-package-1]
+    steps:
       - name: Add failed package
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if [[ -f /tmp/packages-failed.log ]]; then
+          tag_name=$(gh release view --json name --jq '.name')
+          cat > /tmp/packages-failed.log <<EOF
+            ${{ needs.generates-package-1.outputs.failed }}
+            ${{ needs.generate-package-darling.outputs.failed }}
+            ${{ needs.generate-package-paq.outputs.failed }}
+          EOF
+          if [[ -f /tmp/packages-failed.log ]] && [[ -n $(cat /tmp/packages-failed.log) ]]; then
             gh release view --json body --jq '.body' > notes.txt
             echo "---" >> notes.txt
             cat /tmp/packages-failed.log >> notes.txt
-            gh release edit "${{ github.event.release.tag_name }}" --notes-file notes.txt
+            gh release edit "$tag_name" --notes-file notes.txt
           fi
 
   generate-metas:
     permissions: write-all
     name: Generate Metas
     runs-on: ubuntu-latest
-    needs: generate-packages
+    needs: [generate-package-paq, generate-package-darling, generates-package-1]
     steps:
       - uses: actions/checkout@v3
 
@@ -89,15 +202,25 @@ jobs:
       - name: Upload meta
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload "${{ github.event.release.tag_name }}" "/tmp/paq-packages.toml"
+        run: |
+          tag_name=$(gh release view --json name --jq '.name')
+          gh release upload "$tag_name" "/tmp/paq-packages.toml" --clobber
 
-      - name: Add failed package
+  ending-job:
+    permissions: write-all
+    name: Add Cron Message
+    runs-on: ubuntu-latest
+    needs: [generate-metas, generate-failed]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Add Cron Message
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if [[ -f /tmp/paq-packages.log ]] && [[ "$(cat /tmp/paq-packages.log)" != "" ]]; then
-            gh release view --json body --jq '.body' > notes.txt
-            echo "---" >> notes.txt
-            cat /tmp/paq-packages.log >> notes.txt
-            gh release edit "${{ github.event.release.tag_name }}" --notes-file notes.txt
-          fi
+          tag_name=$(gh release view --json name --jq '.name')
+          gh release view --json body --jq '.body' > notes.txt
+          echo "---" >> notes.txt
+          echo "## Ending Job $(date '+%Y-%m-%d %H:%M')" >> notes.txt
+          echo "" >> notes.txt
+          gh release edit "$tag_name" --notes-file notes.txt
