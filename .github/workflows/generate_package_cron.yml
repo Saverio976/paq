@@ -51,8 +51,22 @@ jobs:
             ${{ runner.os }}-paq-
             ${{ runner.os }}-paq
 
-      - name: create path
+      - name: Cache darling build
+        id: cache-darling
+        uses: actions/cache@v4
+        with:
+          path: /tmp/cache-darling
+          key: ${{ runner.os }}-darling-${{ steps.get-date.outputs.date }}
+          restore-keys: |
+            ${{ runner.os }}-darling-${{ steps.get-date.outputs.date }}
+            ${{ runner.os }}-darling-
+            ${{ runner.os }}-darling
+
+      - name: create path paq
         run: mkdir -p /tmp/cache-paq
+
+      - name: create path darling
+        run: mkdir -p /tmp/cache-darling
 
       - name: Generate Packages
         run: .github/workflows/generate_packages.sh

@@ -1,0 +1,10 @@
+author = "Darlinghq"
+description = "Darwin/macOS emulation layer for Linux"
+homepage = "https://www.darlinghq.org/"
+license = "GPL-3.0"
+binaries = [
+    "bin/darling",
+]
+name = "darling"
+deps = []
+chmod = []
