@@ -7,6 +7,7 @@ get_tmp_zip() {
 
 get_target_zip() {
     FILE="$1"
+    mkdir -p "/tmp/packages"
     echo "/tmp/packages/$(basename "$FILE").zip"
 }
 
