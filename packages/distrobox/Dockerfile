@@ -7,8 +7,8 @@ run curl -s https://raw.githubusercontent.com/89luca89/distrobox/main/install | 
 run curl -Lo /tmp/out/LICENSE 'https://raw.githubusercontent.com/89luca89/distrobox/main/COPYING.md'
 run curl -Lo /tmp/out/README.md 'https://raw.githubusercontent.com/89luca89/distrobox/main/docs/README.md'
 
-run mkdir -p /tmp/out/completions
-run mv /tmp/out/share/bash-completion/completions /tmp/out/completions/bash
+# run mkdir -p /tmp/out/completions
+# run mv /tmp/out/share/bash-completion/completions /tmp/out/completions/bash
 run mv /tmp/out/share/icons /tmp/out/icons
 run mv /tmp/out/share/man /tmp/out/man
 run rm -rf /tmp/out/share
