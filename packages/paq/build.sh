@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ex
 
-run pdm install
+pdm install
 # build
 pdm run build
 

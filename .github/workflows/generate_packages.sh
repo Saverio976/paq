@@ -64,7 +64,7 @@ build_package() {
     )
     if [ "$?" -ne "0" ]
     then
-        echo "Failed to build $FILE"
+        echo "Failed $FILE: KO"
         echo "Failed to build $FILE" >> "/tmp/packages-failed.log"
         cat "$LOG_FILE"
         status=1
