@@ -15,8 +15,8 @@ do
     fi
     found=0
     for not_process in "${NOT_PROCESS[@]}"; do
-        echo "Not processing $not_process"
         if [[ "$file" == "$not_process" ]]; then
+            echo "Not processing $file"
             found=1
             break
         fi
