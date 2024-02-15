@@ -162,7 +162,7 @@ jobs:
     permissions: write-all
     name: Generate Failed
     runs-on: ubuntu-latest
-    needs: [generate-package-paq, generate-package-darling, generates-package-1]
+    needs: [generate-package-paq, generate-package-darling, generate-packages-1]
     steps:
       - name: Add failed package
         env:
