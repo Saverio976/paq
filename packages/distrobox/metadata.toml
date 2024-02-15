@@ -1,0 +1,7 @@
+author = "89luca89"
+description = "Use any linux distribution inside your terminal. Enable both backward and forward compatibility with software and freedom to use whatever distribution you’re more comfortable with."
+homepage = "https://distrobox.it/"
+license = "GPL-3.0"
+name = "flashbacktothefuture"
+deps = []
+chmod = []
