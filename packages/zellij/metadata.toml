@@ -1,0 +1,10 @@
+author = "Zellij Org"
+description = "A terminal workspace with batteries included"
+homepage = "https://zellij.dev/"
+license = "MIT"
+binaries = [
+    "bin/zellij",
+]
+name = "zellij"
+deps = []
+chmod = []
