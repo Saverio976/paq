@@ -1,0 +1,10 @@
+author = "Arzzen"
+description = "Git quick statistics is a simple and efficient way to access various statistics in git repository."
+homepage = "https://git-quick-stats.sh/"
+license = "MIT"
+binaries = [
+    "bin/git-quick-stats",
+]
+name = "git-quick-stats"
+deps = []
+chmod = []
