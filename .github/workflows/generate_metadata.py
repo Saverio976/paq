@@ -23,7 +23,7 @@ def log_error(log_to_file, message):
         print(message)
 
 
-reg_expr = r"[a-zA-Z0-9]{2,}"
+reg_expr = r"[a-zA-Z0-9\-_]{2,}"
 reg = re.compile(reg_expr)
 
 
@@ -130,7 +130,7 @@ def process_packages():
         except Exception as esc:
             log_error(True, f"Error in package {package.name}: {esc}")
             continue
-        if not verify_metadata(data, package.name, False):
+        if not verify_metadata(data, package.name, True):
             continue
         if data["name"] != pathlib.Path(package.name).stem:
             log_error(
