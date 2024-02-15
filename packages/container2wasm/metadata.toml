@@ -1,0 +1,11 @@
+author = "Ktock"
+description = "Container to WASM converter"
+homepage = "https://github.com/ktock/container2wasm"
+license = "Apache-2.0"
+binaries = [
+    "bin/c2w",
+    "bin/c2w-net"
+]
+name = "container2wasm"
+deps = []
+chmod = []
