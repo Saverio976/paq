@@ -55,8 +55,10 @@ class MetaData:
                 if key not in ("path", "mode"):
                     raise ValueError("chmod must be list of {path = \"\", mode = \"\"}")
                 ok = ("binary",)
-                if value not in ok:
-                    raise ValueError("chmod mist be list of {path = \"string\", mode = \"string\"} and mode must be one of " + f"{ok}")
+                if key == "mode" and value not in ok:
+                    raise ValueError("chmod must be list of {path = \"string\", mode = \"string\"} and mode must be one of " + f"{ok}")
+                if key == "path" and isinstance(value, str):
+                    raise ValueError("chmod must be list of {path = \"string\", mode = \"string\"} and path must be relative to package")
         return MetaData(
             author=d["author"],
             description=d["description"],
