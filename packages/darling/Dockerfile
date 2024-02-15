@@ -12,13 +12,6 @@ run git lfs install
 run git clone --recursive https://github.com/darlinghq/darling.git /darling
 workdir /darling
 
-run ./tools/uninstall
+COPY ./build.sh ./build.sh
 
-run mkdir -p build
-workdir /darling/build
-
-run cmake ..
-
-run make -j2
-
-cmd bash
+cmd bash ./build.sh
