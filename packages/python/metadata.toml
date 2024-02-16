@@ -1,0 +1,10 @@
+author = "Python Software Foundation"
+description = "The Python programming language"
+homepage = "https://www.python.org/"
+license = "PSF-2.0"
+binaries = [
+    "bin/python"
+]
+name = "python"
+deps = []
+chmod = []
