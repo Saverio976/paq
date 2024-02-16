@@ -45,13 +45,14 @@ def handler_install(conf: PaqConf, args: argparse.Namespace):
     for package in pacakages_to_install:
         error = False
         # try:
-        package.install(console,
+        package.install(
+            console,
             ConfInstall(
                 conf.install_dir,
                 conf.bin_dir,
                 args.update,
                 no_failed_install,
-            )
+            ),
         )
         # except Exception as esc:
         #     console.print(esc)

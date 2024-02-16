@@ -2,22 +2,18 @@ import dataclasses
 import re
 import shutil
 import tempfile
-from typing import List, Optional, Tuple
 from github import Github
 import os
 import tomllib
 import zipfile
-
-from rich.console import Console
+import requests
 from paq import add_symlinks, remove_symlinks
 from paq import MetaData
 from paq.metadata import apply_chmod
 from xdg_base_dirs import xdg_state_home
 from hashlib import md5
-
+from typing import List, Optional, Tuple
 from rich.console import Console
-import requests
-
 from rich.progress import (
     BarColumn,
     DownloadColumn,
@@ -28,12 +24,15 @@ from rich.progress import (
     TransferSpeedColumn,
 )
 
-def __copy_url(progress: Progress, task_id: TaskID, url: str, path: str) -> None:
+
+def __copy_url(
+    progress: Progress, task_id: TaskID, url: str, path: str
+) -> None:
     """Copy data from a url to a local file."""
     progress.console.log(f"Requesting {url}")
     response = requests.get(url, stream=True, allow_redirects=True)
     response.raise_for_status()
-    total_length = response.headers.get('content-length')
+    total_length = response.headers.get("content-length")
     if total_length is None:
         raise ValueError("Response doesn't contain content length")
     try:
@@ -48,6 +47,7 @@ def __copy_url(progress: Progress, task_id: TaskID, url: str, path: str) -> None
             progress.update(task_id, advance=len(chunk))
     progress.console.log(f"Downloaded {path}")
 
+
 def fdownload_progress(console: Console, url: str, filepath: str):
     progress = Progress(
         TextColumn("[bold blue]{task.fields[filename]}", justify="right"),
@@ -59,13 +59,11 @@ def fdownload_progress(console: Console, url: str, filepath: str):
         TransferSpeedColumn(),
         "•",
         TimeRemainingColumn(),
-        console=console
+        console=console,
     )
     with progress:
         task_id = progress.add_task("download", filename=filepath, start=False)
         __copy_url(progress, task_id, url, filepath)
-
-import requests
 
 
 @dataclasses.dataclass
@@ -176,7 +174,9 @@ class OnlinePackage:
                 hash.update(chunk)
         return hash.hexdigest() == self.checksum
 
-    def __download_package(self, console: Console) -> Tuple[str, tempfile.TemporaryDirectory]:
+    def __download_package(
+        self, console: Console
+    ) -> Tuple[str, tempfile.TemporaryDirectory]:
         if self.content_type != "application/zip":
             raise ValueError(f"Unexpected content type: {self.content_type}")
         tmpdir = tempfile.TemporaryDirectory(prefix="paq", suffix=self.name)
@@ -198,7 +198,9 @@ class OnlinePackage:
             raise ValueError(message)
         return download_target, tmpdir
 
-    def get_metadata(self, console: Console, download_target: Optional[str] = None) -> MetaData:
+    def get_metadata(
+        self, console: Console, download_target: Optional[str] = None
+    ) -> MetaData:
         if self.meta is not None:
             return self.meta
         tmpdir: Optional[tempfile.TemporaryDirectory] = None
