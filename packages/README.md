@@ -50,10 +50,23 @@ And for each package
 *`xxx` is the name of the package*
 *`yyy` is the version*
 *`www` is the url to download the package*
+*`zzz` is the sum of the download package*
 
 ```toml
 [packages.xxx]
 version = "yyy"
 download_url = "www"
 content_type = "application/zip"
+checksum = "zzz"
+```
+
+```python
+from hashlib import md5
+
+def md5sum(filename):
+    hash = md5()
+    with open(filename, "rb") as f:
+        for chunk in iter(lambda: f.read(128 * hash.block_size), b""):
+            hash.update(chunk)
+    return hash.hexdigest()
 ```

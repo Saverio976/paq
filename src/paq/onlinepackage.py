@@ -11,6 +11,7 @@ from paq import add_symlinks, remove_symlinks
 from paq import MetaData
 from paq.metadata import apply_chmod
 from xdg_base_dirs import xdg_state_home
+from hashlib import md5
 
 import requests
 
@@ -30,6 +31,7 @@ class OnlinePackage:
     content_type: str
     version: str
     meta: Optional[MetaData] = None
+    checksum: str
 
     @staticmethod
     def get_paq_packages() -> str:
@@ -81,11 +83,12 @@ class OnlinePackage:
                 package.get("content_type", None) != "application/zip"
                 or package.get("download_url", None) is None
                 or package.get("version", None) is None
+                or package.get("checksum", None) is None
             ):
                 return None
             if not isinstance(package["version"], str) or not isinstance(
                 package["download_url"], str
-            ):
+            ) or not isinstance(package["checksum"], str):
                 return None
 
             return OnlinePackage(
@@ -93,6 +96,7 @@ class OnlinePackage:
                 download_url=package["download_url"],
                 content_type=package["content_type"],
                 version=package["version"],
+                checksum=package["checksum"],
             )
 
         new_packages = []
@@ -102,6 +106,13 @@ class OnlinePackage:
                 new_packages.append(pack)
 
         return new_packages
+
+    def __checksum(self, filename) -> bool:
+        hash = md5()
+        with open(filename, "rb") as f:
+            for chunk in iter(lambda: f.read(128 * hash.block_size), b""):
+                hash.update(chunk)
+        return hash.hexdigest() == self.checksum
 
     def __download_package(self) -> Tuple[str, tempfile.TemporaryDirectory]:
         if self.content_type != "application/zip":
@@ -115,6 +126,8 @@ class OnlinePackage:
                 r.raise_for_status()
                 for chunk in r.iter_content(chunk_size=8192):
                     f.write(chunk)
+        if self.__checksum(download_target) is False:
+            raise ValueError(f"Downloaded package zip does not correspond for package {self.name}")
         return download_target, tmpdir
 
     def get_metadata(self, download_target: Optional[str] = None) -> MetaData:

@@ -4,7 +4,7 @@ import requests
 import zipfile
 import pathlib
 import re
-
+from hashlib import md5
 
 PACKAGES_FILE = "/tmp/paq-packages.toml"
 with open(PACKAGES_FILE, "w") as f:
@@ -22,6 +22,12 @@ def log_error(log_to_file, message):
     else:
         print(message)
 
+def md5sum(filename):
+    hash = md5()
+    with open(filename, "rb") as f:
+        for chunk in iter(lambda: f.read(128 * hash.block_size), b""):
+            hash.update(chunk)
+    return hash.hexdigest()
 
 reg_expr = r"[a-zA-Z0-9\-_]{2,}"
 reg = re.compile(reg_expr)
@@ -143,6 +149,7 @@ def process_packages():
             f.write(f"version = \"{data['version']}\"\n")
             f.write(f'download_url = "{package.browser_download_url}"\n')
             f.write(f'content_type = "{package.content_type}"\n')
+            f.write(f'checksum = "{md5sum(target_dowload_zip)}"')
         print(f"Done: {data['name']}")
 
 
