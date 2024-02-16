@@ -7,4 +7,3 @@ binaries = [
 ]
 name = "streamlink"
 deps = []
-chmod = []

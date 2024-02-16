@@ -16,6 +16,8 @@ run cp /tmp/README.md /tmp/out/README.md
 run cp /tmp/LICENSE /tmp/out/LICENSE
 COPY ./metadata.toml /tmp/out/metadata.toml
 run echo "version = \"$(/tmp/out/bin/streamlink --version)\"" >> /tmp/out/metadata.toml
+COPY ./generate_chmod.sh /tmp/generate_chmod.sh
+run bash /tmp/generate_chmod.sh
 
 # cmd
 cmd cp -r /tmp/out/* /out
