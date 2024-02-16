@@ -1,0 +1,10 @@
+author = "Free Software Foundation"
+description = "Bash is the GNU Project's shell—the Bourne Again SHell. This is an sh-compatible shell that incorporates useful features from the Korn shell (ksh) and the C shell (csh)."
+homepage = "https://www.gnu.org/software/bash/"
+license = "GNU-GPL-3.0"
+binaries = [
+    "bin/bash"
+]
+name = "bash"
+deps = []
+chmod = []
