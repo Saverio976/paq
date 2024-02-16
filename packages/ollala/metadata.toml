@@ -1,0 +1,10 @@
+author = "Ollama"
+description = "Get up and running with Llama 2, Mistral, and other large language models."
+homepage = "https://ollama.com/"
+license = "MIT"
+binaries = [
+    "bin/ollama"
+]
+name = "ollama"
+deps = []
+chmod = []
