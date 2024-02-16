@@ -114,6 +114,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate-package-paq, generate-packages-1]
     steps:
+      - uses: actions/checkout@v3
+
       - name: Add failed package
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
