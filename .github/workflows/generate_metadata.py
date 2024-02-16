@@ -22,12 +22,14 @@ def log_error(log_to_file, message):
     else:
         print(message)
 
+
 def md5sum(filename):
     hash = md5()
     with open(filename, "rb") as f:
         for chunk in iter(lambda: f.read(128 * hash.block_size), b""):
             hash.update(chunk)
     return hash.hexdigest()
+
 
 reg_expr = r"[a-zA-Z0-9\-_]{2,}"
 reg = re.compile(reg_expr)
@@ -51,7 +53,9 @@ def verify_metadata(data, package, log_to_file):
         return False
     for binary in data["binaries"]:
         if not isinstance(binary, str):
-            log_error(log_to_file, f"- {package}:: binaries must be list of string")
+            log_error(
+                log_to_file, f"- {package}:: binaries must be list of string"
+            )
             return False
     if "name" not in data or not isinstance(data["name"], str):
         log_error(log_to_file, f"- {package}:: name must be string")
@@ -64,7 +68,9 @@ def verify_metadata(data, package, log_to_file):
         return False
     for dep in data["deps"]:
         if not isinstance(dep, str):
-            log_error(log_to_file, f"- {package}:: deps must be list of string")
+            log_error(
+                log_to_file, f"- {package}:: deps must be list of string"
+            )
             return False
     if "chmod" not in data or not isinstance(data["chmod"], list):
         log_error(log_to_file, f"- {package}:: chmod must be list")
@@ -87,19 +93,26 @@ def verify_metadata(data, package, log_to_file):
                 return False
             ok_mode = ("binary",)
             if key == "mode" and value not in ok_mode:
-                log_error(log_to_file, f"- {package}:: chmod mode must be in {ok_mode}")
+                log_error(
+                    log_to_file,
+                    f"- {package}:: chmod mode must be in {ok_mode}",
+                )
                 return False
             if key == "path" and not isinstance(value, str):
-                log_error(log_to_file, f"- {package}:: chmod path must be string")
+                log_error(
+                    log_to_file, f"- {package}:: chmod path must be string"
+                )
     match = reg.match(data["name"])
     if match is None:
         log_error(
-            log_to_file, f"- {package}:: name must match regular expression: {reg_expr}"
+            log_to_file,
+            f"- {package}:: name must match regular expression: {reg_expr}",
         )
         return False
     if match.start() != 0 or match.end() != len(data["name"]):
         log_error(
-            log_to_file, f"- {package}:: name must match regular expression: {reg_expr}"
+            log_to_file,
+            f"- {package}:: name must match regular expression: {reg_expr}",
         )
         return False
     return True

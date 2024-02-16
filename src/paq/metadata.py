@@ -5,10 +5,12 @@ import sys
 import os
 import tomllib
 
+
 @dataclasses.dataclass
 class Chmod:
     path: str
     mode: str
+
 
 @dataclasses.dataclass
 class MetaData:
@@ -47,18 +49,35 @@ class MetaData:
             if not isinstance(dep, str):
                 raise ValueError("deps must be a list of strings")
         if not isinstance(d["chmod"], list):
-            raise ValueError("chmod must be list of {path = \"string\", mode = \"string\"}")
+            raise ValueError(
+                'chmod must be list of {path = "string", mode = "string"}'
+            )
         for file in d["chmod"]:
             if not isinstance(file, dict):
-                raise ValueError("chmod must be list of {path = \"string\", mode = \"string\"}")
+                raise ValueError(
+                    'chmod must be list of {path = "string", mode = "string"}'
+                )
             for key, value in file.items():
                 if key not in ("path", "mode"):
-                    raise ValueError("chmod must be list of {path = \"\", mode = \"\"}")
+                    raise ValueError(
+                        'chmod must be list of {path = "", mode = ""}'
+                    )
                 ok = ("binary",)
                 if key == "mode" and value not in ok:
-                    raise ValueError("chmod must be list of {path = \"string\", mode = \"string\"} and mode must be one of " + f"{ok}")
+                    message = (
+                        "chmod must be list of "
+                        + '{path = "string", mode = "string"} '
+                        + "and mode must be one of "
+                        + f"{ok}"
+                    )
+                    raise ValueError(message)
                 if key == "path" and not isinstance(value, str):
-                    raise ValueError("chmod must be list of {path = \"string\", mode = \"string\"} and path must be relative to package")
+                    message = (
+                        "chmod must be list of "
+                        + '{path = "string", mode = "string"} '
+                        + "and path must be relative to package"
+                    )
+                    raise ValueError(message)
         return MetaData(
             author=d["author"],
             description=d["description"],
@@ -68,12 +87,18 @@ class MetaData:
             version=d["version"],
             name=d["name"],
             deps=d["deps"],
-            chmod=list(map(lambda x: Chmod(path=x["path"], mode=x["mode"]), d["chmod"]))
+            chmod=list(
+                map(
+                    lambda x: Chmod(path=x["path"], mode=x["mode"]), d["chmod"]
+                )
+            ),
         )
 
 
 def remove_symlinks(bin_dir: str, install_dir_package: str):
-    with open(os.path.join(install_dir_package, "metadata.toml"), "rb") as meta:
+    with open(
+        os.path.join(install_dir_package, "metadata.toml"), "rb"
+    ) as meta:
         data = MetaData.from_dict(tomllib.load(meta))
     for binary in data.binaries:
         try:
@@ -83,7 +108,9 @@ def remove_symlinks(bin_dir: str, install_dir_package: str):
 
 
 def add_symlinks(bin_dir: str, install_dir_package: str):
-    with open(os.path.join(install_dir_package, "metadata.toml"), "rb") as meta:
+    with open(
+        os.path.join(install_dir_package, "metadata.toml"), "rb"
+    ) as meta:
         datas = MetaData.from_dict(tomllib.load(meta))
     for binary in datas.binaries:
         if sys.platform in ("linux", "darwin"):
@@ -100,8 +127,11 @@ def add_symlinks(bin_dir: str, install_dir_package: str):
             os.path.join(bin_dir, os.path.basename(binary)),
         )
 
+
 def apply_chmod(install_dir_package: str):
-    with open(os.path.join(install_dir_package, "metadata.toml"), "rb") as meta:
+    with open(
+        os.path.join(install_dir_package, "metadata.toml"), "rb"
+    ) as meta:
         datas = MetaData.from_dict(tomllib.load(meta))
     for mod in datas.chmod:
         if mod.mode == "binary" and sys.platform in ("linux", "darwin"):

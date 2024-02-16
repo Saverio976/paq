@@ -1,9 +1,14 @@
 import argparse
 import os
-import re
 from rich_argparse import RawDescriptionRichHelpFormatter
 import sys
-from paq import PaqConf, ConfInstall, ConfRemove, OnlinePackage, InstalledPackage
+from paq import (
+    PaqConf,
+    ConfInstall,
+    ConfRemove,
+    OnlinePackage,
+    InstalledPackage,
+)
 
 if not sys.warnoptions and os.getenv("DEBUG", None) is not None:
     import warnings
@@ -25,20 +30,31 @@ def handler_install(conf: PaqConf, args: argparse.Namespace):
     conf.install_dir = args.install_dir[0]
     no_failed_install = False
     if len(args.packages) == 0:
-        args.packages = list(map(lambda x: x.name, InstalledPackage.get_all_packages()))
+        args.packages = list(
+            map(lambda x: x.name, InstalledPackage.get_all_packages())
+        )
         no_failed_install = True
     packages = OnlinePackage.get_all_packages(queries=args.packages)
     pacakages_to_install = filter(lambda p: p.name in args.packages, packages)
     for package in pacakages_to_install:
         error = False
         try:
-            package.install(ConfInstall(conf.install_dir, conf.bin_dir, args.update, no_failed_install))
+            package.install(
+                ConfInstall(
+                    conf.install_dir,
+                    conf.bin_dir,
+                    args.update,
+                    no_failed_install,
+                )
+            )
         except Exception as esc:
             print(esc)
             error = True
         paq_install = InstalledPackage.add_package(package.name)
         if error:
-            paq_install.remove_package(ConfRemove(conf.install_dir, conf.bin_dir))
+            paq_install.remove_package(
+                ConfRemove(conf.install_dir, conf.bin_dir)
+            )
 
 
 def handler_update(conf: PaqConf, args: argparse.Namespace):
@@ -63,7 +79,8 @@ def handler_search(_: PaqConf, args: argparse.Namespace):
 
 def create_parser(conf: PaqConf) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        formatter_class=RawDescriptionRichHelpFormatter, description="Install packages"
+        formatter_class=RawDescriptionRichHelpFormatter,
+        description="Install packages",
     )
     parser.add_argument(
         "--install-dir",
@@ -103,28 +120,47 @@ def create_parser(conf: PaqConf) -> argparse.ArgumentParser:
     parser_install = subparser.add_parser("install")
     parser_install.set_defaults(func=handler_install)
     parser_install.add_argument(
-        "--update", action="store_true", default=False, help="Update existing packages"
+        "--update",
+        action="store_true",
+        default=False,
+        help="Update existing packages",
     )
     parser_install.add_argument(
-        "packages", nargs="*", type=str, action="store", help="Packages to install"
+        "packages",
+        nargs="*",
+        type=str,
+        action="store",
+        help="Packages to install",
     )
 
     parser_update = subparser.add_parser("update")
     parser_update.set_defaults(func=handler_update)
     parser_update.add_argument(
-        "packages", nargs="*", type=str, action="store", help="Packages to install"
+        "packages",
+        nargs="*",
+        type=str,
+        action="store",
+        help="Packages to install",
     )
 
     parser_uninstall = subparser.add_parser("uninstall")
     parser_uninstall.set_defaults(func=handler_uninstall)
     parser_uninstall.add_argument(
-        "packages", nargs="*", type=str, action="store", help="Packages to install"
+        "packages",
+        nargs="*",
+        type=str,
+        action="store",
+        help="Packages to install",
     )
 
     parser_search = subparser.add_parser("search")
     parser_search.set_defaults(func=handler_search)
     parser_search.add_argument(
-        "query", nargs="*", type=str, action="store", help="Queries to search (regex)"
+        "query",
+        nargs="*",
+        type=str,
+        action="store",
+        help="Queries to search (regex)",
     )
 
     return parser

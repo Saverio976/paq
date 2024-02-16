@@ -30,8 +30,8 @@ class OnlinePackage:
     download_url: str
     content_type: str
     version: str
-    meta: Optional[MetaData] = None
     checksum: str
+    meta: Optional[MetaData] = None
 
     @staticmethod
     def get_paq_packages() -> str:
@@ -41,8 +41,10 @@ class OnlinePackage:
 
     @staticmethod
     def get_all_packages(
-        owner: str = "Saverio976", repo: str = "paq", queries: List[str] = [],
-        latest_paq: Optional[str] = None
+        owner: str = "Saverio976",
+        repo: str = "paq",
+        queries: List[str] = [],
+        latest_paq: Optional[str] = None,
     ) -> List["OnlinePackage"]:
         recompiled: List[re.Pattern] = []
         for query in queries:
@@ -50,7 +52,11 @@ class OnlinePackage:
 
         if latest_paq is None:
             g = Github()
-            packages = g.get_repo(owner + "/" + repo).get_latest_release().get_assets()
+            packages = (
+                g.get_repo(owner + "/" + repo)
+                .get_latest_release()
+                .get_assets()
+            )
 
             def is_packages_file(package) -> bool:
                 return package.name == "paq-packages.toml"
@@ -59,7 +65,9 @@ class OnlinePackage:
 
             with open(OnlinePackage.get_paq_packages(), "wb") as f:
                 with requests.get(
-                    package.browser_download_url, allow_redirects=True, stream=True
+                    package.browser_download_url,
+                    allow_redirects=True,
+                    stream=True,
                 ) as r:
                     r.raise_for_status()
                     for chunk in r.iter_content(chunk_size=8192):
@@ -86,17 +94,19 @@ class OnlinePackage:
                 or package.get("checksum", None) is None
             ):
                 return None
-            if not isinstance(package["version"], str) or not isinstance(
-                package["download_url"], str
-            ) or not isinstance(package["checksum"], str):
+            if (
+                not isinstance(package["version"], str)
+                or not isinstance(package["download_url"], str)
+                or not isinstance(package["checksum"], str)
+            ):
                 return None
 
             return OnlinePackage(
                 name=name,
                 download_url=package["download_url"],
                 content_type=package["content_type"],
-                version=package["version"],
                 checksum=package["checksum"],
+                version=package["version"],
             )
 
         new_packages = []
@@ -127,7 +137,12 @@ class OnlinePackage:
                 for chunk in r.iter_content(chunk_size=8192):
                     f.write(chunk)
         if self.__checksum(download_target) is False:
-            raise ValueError(f"Downloaded package zip does not correspond for package {self.name}")
+            message = (
+                "Downloaded package zip does not correspond "
+                + "for package "
+                + f"{self.name}"
+            )
+            raise ValueError(message)
         return download_target, tmpdir
 
     def get_metadata(self, download_target: Optional[str] = None) -> MetaData:
@@ -146,9 +161,13 @@ class OnlinePackage:
     def install(self, conf: ConfInstall):
         print(f"Installing package: {self.name}")
         download_target, tmpdir = self.__download_package()
-        datas = self.get_metadata(download_target)  # add metadata to the attribute
+        datas = self.get_metadata(
+            download_target
+        )  # add metadata to the attribute
         if len(datas.deps) > 0:
-            all_packages = OnlinePackage.get_all_packages(latest_paq=OnlinePackage.get_paq_packages())
+            all_packages = OnlinePackage.get_all_packages(
+                latest_paq=OnlinePackage.get_paq_packages()
+            )
             conf_copy = ConfInstall(**dataclasses.asdict(conf), no_update=True)
             for pak in all_packages:
                 if pak.name in datas.deps:
