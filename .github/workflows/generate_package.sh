@@ -45,11 +45,6 @@ build_package() {
         DOCKER_ARGS_PAQ="$DOCKER_ARGS_PAQ -v /tmp/cache-paq/onefile-build:/paq/paq.onefile-build"
         DOCKER_ARGS_PAQ="$DOCKER_ARGS_PAQ -v /tmp/cache-paq/venv:/paq/.venv"
     fi
-    DOCKER_ARGS_DARLING=""
-    if [[ "$FILE" == "./packages/darling" ]]; then
-        mkdir -p /tmp/cache-darling/build
-        DOCKER_ARGS_DARLING="-v /tmp/cache-darling/build:/darling/build"
-    fi
     #--
     (
         exec 3>&1 4>&2 > "$LOG_FILE" 2>&1
@@ -62,7 +57,6 @@ build_package() {
             --rm \
             -v "$TMP_DIR:/out" \
             $DOCKER_ARGS_PAQ \
-            $DOCKER_ARGS_DARLING \
             "package-tmp-$(basename "$FILE")"
         (cd "$TMP_DIR" && zip -r "$TMP_ZIP" .)
         cp "$TMP_ZIP" "$TARGET_ZIP"
