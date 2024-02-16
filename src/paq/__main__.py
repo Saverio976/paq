@@ -41,7 +41,7 @@ def handler_install(conf: PaqConf, args: argparse.Namespace):
             map(lambda x: x.name, InstalledPackage.get_all_packages())
         )
         no_failed_install = True
-    packages = OnlinePackage.get_all_packages(queries=args.packages)
+    packages = OnlinePackage.get_all_packages(console, queries=args.packages)
     pacakages_to_install = filter(lambda p: p.name in args.packages, packages)
     for package in pacakages_to_install:
         error = False
@@ -83,7 +83,7 @@ def handler_uninstall(conf: PaqConf, args: argparse.Namespace):
 
 
 def handler_search(_: PaqConf, args: argparse.Namespace):
-    packages = OnlinePackage.get_all_packages(queries=args.query)
+    packages = OnlinePackage.get_all_packages(console, queries=args.query)
     arr = []
     for package in packages:
         s = f"[b]{package.name}[/b]\n[yellow]{package.version}"

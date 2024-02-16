@@ -1,5 +1,4 @@
 import dataclasses
-import re
 import shutil
 import tempfile
 from github import Github
@@ -91,6 +90,7 @@ class OnlinePackage:
 
     @staticmethod
     def get_all_packages(
+        console: Console,
         owner: str = "Saverio976",
         repo: str = "paq",
         queries: List[str] = [],
@@ -109,15 +109,7 @@ class OnlinePackage:
 
             package = list(filter(is_packages_file, packages))[0]
 
-            with open(OnlinePackage.get_paq_packages(), "wb") as f:
-                with requests.get(
-                    package.browser_download_url,
-                    allow_redirects=True,
-                    stream=True,
-                ) as r:
-                    r.raise_for_status()
-                    for chunk in r.iter_content(chunk_size=8192):
-                        f.write(chunk)
+            fdownload_progress(console, package.browser_download_url, OnlinePackage.get_paq_packages())
 
         with open(OnlinePackage.get_paq_packages(), "rb") as f:
             datas = tomllib.load(f)
@@ -214,7 +206,7 @@ class OnlinePackage:
         download_target, tmpdir = self.__download_package(console)
         datas = self.get_metadata(console, download_target)
         if len(datas.deps) > 0:
-            all_packages = OnlinePackage.get_all_packages(
+            all_packages = OnlinePackage.get_all_packages(console,
                 latest_paq=OnlinePackage.get_paq_packages()
             )
             conf_copy = ConfInstall(**dataclasses.asdict(conf), no_update=True)
