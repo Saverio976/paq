@@ -9,6 +9,12 @@ from paq import (
     OnlinePackage,
     InstalledPackage,
 )
+from rich.console import Console
+from rich.columns import Columns
+from rich.panel import Panel
+import json
+
+console = Console(tab_size=4)
 
 if not sys.warnoptions and os.getenv("DEBUG", None) is not None:
     import warnings
@@ -17,12 +23,13 @@ if not sys.warnoptions and os.getenv("DEBUG", None) is not None:
 
 
 def handler_config_get(conf: PaqConf, args: argparse.Namespace):
-    print(conf.get(args.key[0]))
+    console.print(conf.get(args.key[0]))
 
 
 def handler_config_set(conf: PaqConf, args: argparse.Namespace):
     conf.set(args.key[0], args.value[0])
     conf.save()
+    console.print_json('{"' + args.key[0] + '": "' + args.value[0] + '"}')
 
 
 def handler_install(conf: PaqConf, args: argparse.Namespace):
@@ -48,7 +55,7 @@ def handler_install(conf: PaqConf, args: argparse.Namespace):
                 )
             )
         except Exception as esc:
-            print(esc)
+            console.print(esc)
             error = True
         paq_install = InstalledPackage.add_package(package.name)
         if error:
@@ -63,6 +70,9 @@ def handler_update(conf: PaqConf, args: argparse.Namespace):
 
 
 def handler_uninstall(conf: PaqConf, args: argparse.Namespace):
+    if len(args.packages) == 0:
+        console.print("[red]Need atleast 1 package to uninstall")
+        return
     conf.bin_dir = args.bin_dir[0]
     conf.install_dir = args.install_dir[0]
     packages = InstalledPackage.get_all_packages()
@@ -73,8 +83,11 @@ def handler_uninstall(conf: PaqConf, args: argparse.Namespace):
 
 def handler_search(_: PaqConf, args: argparse.Namespace):
     packages = OnlinePackage.get_all_packages(queries=args.query)
+    arr = []
     for package in packages:
-        print(package.name, package.version)
+        s = f"[b]{package.name}[/b]\n[yellow]{package.version}"
+        arr.append(Panel(s, expand=True))
+    console.print(Columns(arr))
 
 
 def create_parser(conf: PaqConf) -> argparse.ArgumentParser:
