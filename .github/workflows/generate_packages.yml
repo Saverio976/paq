@@ -96,7 +96,7 @@ jobs:
           if [[ -f /tmp/packages-failed.log ]]; then
             echo "failed=\"$(cat /tmp/packages-failed.log)\"" >> $GITHUB_OUTPUT
           else
-            echo "failed=\"\"" >> $GITHUB_OUTPUT
+            echo "failed=" >> $GITHUB_OUTPUT
           fi
 
       - name: Upload zip
@@ -171,7 +171,7 @@ jobs:
         run: |
           tag_name=$(gh release view --json name --jq '.name')
           gh release view --json body --jq '.body' > notes.txt
-          echo "---" >> notes.txt
+          echo "" >> notes.txt
           echo "## Ending Job $(date '+%Y-%m-%d %H:%M')" >> notes.txt
           echo "" >> notes.txt
           gh release edit "$tag_name" --notes-file notes.txt
