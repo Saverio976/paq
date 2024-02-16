@@ -44,19 +44,19 @@ def handler_install(conf: PaqConf, args: argparse.Namespace):
     pacakages_to_install = filter(lambda p: p.name in args.packages, packages)
     for package in pacakages_to_install:
         error = False
-        # try:
-        package.install(
-            console,
-            ConfInstall(
-                conf.install_dir,
-                conf.bin_dir,
-                args.update,
-                no_failed_install,
-            ),
-        )
-        # except Exception as esc:
-        #     console.print(esc)
-        #     error = True
+        try:
+            package.install(
+                console,
+                ConfInstall(
+                    conf.install_dir,
+                    conf.bin_dir,
+                    args.update,
+                    no_failed_install,
+                ),
+            )
+        except Exception:
+            console.print_exception()
+            error = True
         paq_install = InstalledPackage.add_package(package.name)
         if error:
             paq_install.remove_package(

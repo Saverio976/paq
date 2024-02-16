@@ -96,10 +96,13 @@ class MetaData:
 
 
 def remove_symlinks(bin_dir: str, install_dir_package: str):
-    with open(
-        os.path.join(install_dir_package, "metadata.toml"), "rb"
-    ) as meta:
-        data = MetaData.from_dict(tomllib.load(meta))
+    try:
+        with open(
+            os.path.join(install_dir_package, "metadata.toml"), "rb"
+        ) as meta:
+            data = MetaData.from_dict(tomllib.load(meta))
+    except FileNotFoundError:
+        return
     for binary in data.binaries:
         try:
             os.remove(os.path.join(bin_dir, os.path.basename(binary)))
