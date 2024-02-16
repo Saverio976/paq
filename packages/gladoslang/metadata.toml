@@ -1,0 +1,10 @@
+author = "Adelaide CHANTEUX; Ange MOUQUET; Matthieu FRAIZ; Raymond VIERGE-THALAMAS; Thibault MIR"
+description = "A Programming Language made for a school project"
+homepage = "https://mareaucanard.github.io/GLaDOS-epitech-2026/"
+license = "BSD-3"
+binaries = [
+    "bin/glados-bin",
+]
+name = "gladoslang"
+deps = []
+chmod = []
