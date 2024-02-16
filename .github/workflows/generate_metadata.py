@@ -149,7 +149,7 @@ def process_packages():
             f.write(f"version = \"{data['version']}\"\n")
             f.write(f'download_url = "{package.browser_download_url}"\n')
             f.write(f'content_type = "{package.content_type}"\n')
-            f.write(f'checksum = "{md5sum(target_dowload_zip)}"')
+            f.write(f'checksum = "{md5sum(target_dowload_zip)}"\n')
         print(f"Done: {data['name']}")
 
 
