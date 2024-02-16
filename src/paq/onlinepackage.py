@@ -96,10 +96,6 @@ class OnlinePackage:
         queries: List[str] = [],
         latest_paq: Optional[str] = None,
     ) -> List["OnlinePackage"]:
-        recompiled: List[re.Pattern] = []
-        for query in queries:
-            recompiled.append(re.compile(query))
-
         if latest_paq is None:
             g = Github()
             packages = (
@@ -128,10 +124,10 @@ class OnlinePackage:
 
         def transform(name, package: dict) -> Optional[OnlinePackage]:
             is_ok = True
-            if len(recompiled) > 0:
+            if len(queries) > 0:
                 is_ok = False
-                for com in recompiled:
-                    if com.match(name) is not None:
+                for com in queries:
+                    if com in name:
                         is_ok = True
                         break
             if not is_ok:
