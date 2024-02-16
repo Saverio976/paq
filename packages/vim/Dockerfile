@@ -14,7 +14,7 @@ run cp /tmp/vim /tmp/out/bin/vim
 run cp /tmp/LICENSE /tmp/out/LICENSE
 run cp /tmp/README.md /tmp/out/README.md
 COPY ./metadata.toml /tmp/out/metadata.toml
-run echo "version = \"$(/tmp/vim --version | head -n 1 | cut -f5 -d' ' | tr -d '\n')\"" >> /tmp/out/metadata.toml
+run echo "version = \"$(sh -c '/tmp/vim --version' | head -n 1 | cut -f5 -d' ')\"" >> /tmp/out/metadata.toml
 
 # cmd
 cmd cp -r /tmp/out/* /out
