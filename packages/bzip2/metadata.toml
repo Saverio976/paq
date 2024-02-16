@@ -1,0 +1,10 @@
+author = "Bzip2"
+description = "Bzip2/libbz2 is a program and library for lossless, block-sorting data compression. This is the official repository for development of BZip2 1.1+."
+homepage = "https://gitlab.com/bzip2/bzip2/"
+license = "BSD-3"
+binaries = [
+    "bin/bzip2"
+]
+name = "bzip2"
+deps = []
+chmod = []
