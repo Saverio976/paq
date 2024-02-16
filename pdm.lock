@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:21c3aeee4fa20b9e4b4e56a7ee415cfc2ba897302d0975faa608a9e1509543d6"
+content_hash = "sha256:dab9c9a30757dd143c6ebffbb442e81d3b3a8ef1801e72f7f988b7ac3bfc7ca3"
 
 [[package]]
 name = "black"
@@ -523,6 +523,17 @@ groups = ["default"]
 files = [
     {file = "urllib3-2.2.0-py3-none-any.whl", hash = "sha256:ce3711610ddce217e6d113a2732fafad960a03fd0318c91faa79481e35c11224"},
     {file = "urllib3-2.2.0.tar.gz", hash = "sha256:051d961ad0c62a94e50ecf1af379c3aba230c66c710493493560c0c223c49f20"},
+]
+
+[[package]]
+name = "vulture"
+version = "2.11"
+requires_python = ">=3.8"
+summary = "Find dead code"
+groups = ["dev"]
+files = [
+    {file = "vulture-2.11-py2.py3-none-any.whl", hash = "sha256:12d745f7710ffbf6aeb8279ba9068a24d4e52e8ed333b8b044035c9d6b823aba"},
+    {file = "vulture-2.11.tar.gz", hash = "sha256:f0fbb60bce6511aad87ee0736c502456737490a82d919a44e6d92262cb35f1c2"},
 ]
 
 [[package]]

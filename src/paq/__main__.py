@@ -8,6 +8,7 @@ from paq import (
     ConfRemove,
     OnlinePackage,
     InstalledPackage,
+    __version__,
 )
 from rich.console import Console
 from rich.columns import Columns
@@ -90,6 +91,26 @@ def handler_search(_: PaqConf, args: argparse.Namespace):
     console.print(Columns(arr))
 
 
+def handler_list(conf: PaqConf, args: argparse.Namespace):
+    packages = InstalledPackage.get_all_packages(args.query)
+    arr = []
+    conf.bin_dir = args.bin_dir[0]
+    conf.install_dir = args.install_dir[0]
+    confRm = ConfRemove(conf.install_dir, conf.bin_dir)
+    for package in packages:
+        s = (
+            f"[b]{package.get_metadata(confRm).name}[/b]:"
+            + f"{package.get_metadata(confRm).version}\n"
+            + f"{package.get_metadata(confRm).author} :: "
+            + f"{package.get_metadata(confRm).license}\n"
+            + f"[link={package.get_metadata(confRm).homepage}]"
+            + f"[i][blue]{package.get_metadata(confRm).homepage}[/blue][/i]\n"
+            + f"{package.get_metadata(confRm).description}\n"
+        )
+        arr.append(Panel(s, expand=True))
+    console.print(Columns(arr))
+
+
 def create_parser(conf: PaqConf) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         formatter_class=RawDescriptionRichHelpFormatter,
@@ -109,6 +130,12 @@ def create_parser(conf: PaqConf) -> argparse.ArgumentParser:
         default=[conf.bin_dir],
         type=str,
         action="store",
+        help="Specify where binaries will be symlinked",
+    )
+    parser.add_argument(
+        "--version",
+        default=False,
+        action="store_true",
         help="Specify where binaries will be symlinked",
     )
     parser.set_defaults(func=lambda conf, args: parser.print_help())
@@ -173,7 +200,17 @@ def create_parser(conf: PaqConf) -> argparse.ArgumentParser:
         nargs="*",
         type=str,
         action="store",
-        help="Queries to search (regex)",
+        help="Queries to search (contains)",
+    )
+
+    parser_list = subparser.add_parser("list")
+    parser_list.set_defaults(func=handler_list)
+    parser_list.add_argument(
+        "query",
+        nargs="*",
+        type=str,
+        action="store",
+        help="Queries to list installed (fnmatch)",
     )
 
     return parser
@@ -183,6 +220,9 @@ def main():
     conf = PaqConf.get_conf()
     parser = create_parser(conf)
     args = parser.parse_args()
+    if args.version:
+        console.print(f"paq {__version__}")
+        return
     args.func(conf, args)
 
 

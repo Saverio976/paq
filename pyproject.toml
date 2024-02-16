@@ -1,6 +1,6 @@
 [project]
 name = "paq"
-version = "0.0.0"
+version = "0.3.0"
 description = "side project package manager"
 authors = [
     {name = "Xavier Mitault", email = "xavier.mitault@epitech.eu"},
@@ -34,7 +34,9 @@ pdm run nuitka3
  --follow-imports
  --standalone
  --onefile
- --onefile-tempdir-spec='{CACHE_DIR}/{COMPANY}/{PRODUCT}/unpack'
+ --file-version=0.3.0
+ --product-version=0.3.0
+ --onefile-tempdir-spec='{CACHE_DIR}/{COMPANY}/{PRODUCT}/{VERSION}/unpack'
  src/paq
 """
 run = "python ./src/paq"
@@ -44,6 +46,7 @@ dev = [
     "nuitka>=2.0.2",
     "black>=24.1.1",
     "flake8>=7.0.0",
+    "vulture>=2.11",
 ]
 
 [tool.pyright]

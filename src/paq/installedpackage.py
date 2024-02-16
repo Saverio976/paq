@@ -3,9 +3,10 @@ import os
 import tomllib
 import toml
 import shutil
-from typing import List
+from typing import List, Optional
 from xdg_base_dirs import xdg_config_home
-from paq import remove_symlinks
+from paq import remove_symlinks, MetaData
+import fnmatch
 
 
 @dataclasses.dataclass
@@ -17,13 +18,14 @@ class ConfRemove:
 @dataclasses.dataclass
 class InstalledPackage:
     name: str
+    meta: Optional[MetaData] = None
 
     @staticmethod
     def get_path_config() -> str:
         return os.path.join(xdg_config_home(), "paq", "installed.toml")
 
     @staticmethod
-    def get_all_packages() -> List["InstalledPackage"]:
+    def get_all_packages(queries: List[str] = []) -> List["InstalledPackage"]:
         try:
             with open(InstalledPackage.get_path_config(), "rb") as f:
                 datas = tomllib.load(f)
@@ -31,8 +33,15 @@ class InstalledPackage:
             return []
 
         packages = []
+        default_found = True if len(queries) == 0 else False
         for key, _ in datas.items():
-            packages.append(InstalledPackage(key))
+            found = default_found
+            for query in queries:
+                if fnmatch.fnmatch(key, query):
+                    found = True
+                    break
+            if found:
+                packages.append(InstalledPackage(key))
 
         return packages
 
@@ -79,3 +88,13 @@ class InstalledPackage:
         with open(InstalledPackage.get_path_config(), "w") as f:
             toml.dump(datas, f)
         print(f"Removed package: {self.name}")
+
+    def get_metadata(self, conf: ConfRemove) -> MetaData:
+        if self.meta is not None:
+            return self.meta
+        with open(
+            os.path.join(conf.install_dir, self.name, "metadata.toml"), "rb"
+        ) as f:
+            datas = tomllib.load(f)
+        self.meta = MetaData.from_dict(datas)
+        return self.meta
