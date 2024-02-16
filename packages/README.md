@@ -34,3 +34,26 @@ chmod = [
                                          # `mode` can be `binary`
 ]
 ```
+
+## paq-packages.toml
+
+It is used to know which packages are ok to download and the url to use
+
+It contain a top level empty `[paq]`
+
+```toml
+[paq]
+```
+
+And for each package
+
+*`xxx` is the name of the package*
+*`yyy` is the version*
+*`www` is the url to download the package*
+
+```toml
+[packages.xxx]
+version = "yyy"
+download_url = "www"
+content_type = "application/zip"
+```
