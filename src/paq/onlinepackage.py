@@ -7,11 +7,63 @@ from github import Github
 import os
 import tomllib
 import zipfile
+
+from rich.console import Console
 from paq import add_symlinks, remove_symlinks
 from paq import MetaData
 from paq.metadata import apply_chmod
 from xdg_base_dirs import xdg_state_home
 from hashlib import md5
+
+from rich.console import Console
+import requests
+
+from rich.progress import (
+    BarColumn,
+    DownloadColumn,
+    Progress,
+    TaskID,
+    TextColumn,
+    TimeRemainingColumn,
+    TransferSpeedColumn,
+)
+
+def __copy_url(progress: Progress, task_id: TaskID, url: str, path: str) -> None:
+    """Copy data from a url to a local file."""
+    progress.console.log(f"Requesting {url}")
+    response = requests.get(url, stream=True, allow_redirects=True)
+    response.raise_for_status()
+    total_length = response.headers.get('content-length')
+    if total_length is None:
+        raise ValueError("Response doesn't contain content length")
+    try:
+        total_length = int(total_length)
+    except ValueError:
+        raise
+    progress.update(task_id, total=total_length)
+    with open(path, "wb") as dest_file:
+        progress.start_task(task_id)
+        for chunk in response.iter_content(chunk_size=8192):
+            dest_file.write(chunk)
+            progress.update(task_id, advance=len(chunk))
+    progress.console.log(f"Downloaded {path}")
+
+def fdownload_progress(console: Console, url: str, filepath: str):
+    progress = Progress(
+        TextColumn("[bold blue]{task.fields[filename]}", justify="right"),
+        BarColumn(bar_width=None),
+        "[progress.percentage]{task.percentage:>3.1f}%",
+        "•",
+        DownloadColumn(),
+        "•",
+        TransferSpeedColumn(),
+        "•",
+        TimeRemainingColumn(),
+        console=console
+    )
+    with progress:
+        task_id = progress.add_task("download", filename=filepath, start=False)
+        __copy_url(progress, task_id, url, filepath)
 
 import requests
 
@@ -124,18 +176,19 @@ class OnlinePackage:
                 hash.update(chunk)
         return hash.hexdigest() == self.checksum
 
-    def __download_package(self) -> Tuple[str, tempfile.TemporaryDirectory]:
+    def __download_package(self, console: Console) -> Tuple[str, tempfile.TemporaryDirectory]:
         if self.content_type != "application/zip":
             raise ValueError(f"Unexpected content type: {self.content_type}")
         tmpdir = tempfile.TemporaryDirectory(prefix="paq", suffix=self.name)
         download_target = os.path.join(tmpdir.name, self.name) + ".zip"
-        with open(download_target, "wb") as f:
-            with requests.get(
-                self.download_url, allow_redirects=True, stream=True
-            ) as r:
-                r.raise_for_status()
-                for chunk in r.iter_content(chunk_size=8192):
-                    f.write(chunk)
+        fdownload_progress(console, self.download_url, download_target)
+        # with open(download_target, "wb") as f:
+        #     with requests.get(
+        #         self.download_url, allow_redirects=True, stream=True
+        #     ) as r:
+        #         r.raise_for_status()
+        #         for chunk in r.iter_content(chunk_size=8192):
+        #             f.write(chunk)
         if self.__checksum(download_target) is False:
             message = (
                 "Downloaded package zip does not correspond "
@@ -145,12 +198,12 @@ class OnlinePackage:
             raise ValueError(message)
         return download_target, tmpdir
 
-    def get_metadata(self, download_target: Optional[str] = None) -> MetaData:
+    def get_metadata(self, console: Console, download_target: Optional[str] = None) -> MetaData:
         if self.meta is not None:
             return self.meta
         tmpdir: Optional[tempfile.TemporaryDirectory] = None
         if download_target is None:
-            download_target, tmpdir = self.__download_package()
+            download_target, tmpdir = self.__download_package(console)
         with zipfile.ZipFile(download_target, "r") as zipp:
             with zipp.open("metadata.toml") as meta:
                 self.meta = MetaData.from_dict(tomllib.load(meta))
@@ -158,12 +211,10 @@ class OnlinePackage:
             tmpdir.cleanup()
         return self.meta
 
-    def install(self, conf: ConfInstall):
+    def install(self, console: Console, conf: ConfInstall):
         print(f"Installing package: {self.name}")
-        download_target, tmpdir = self.__download_package()
-        datas = self.get_metadata(
-            download_target
-        )  # add metadata to the attribute
+        download_target, tmpdir = self.__download_package(console)
+        datas = self.get_metadata(console, download_target)
         if len(datas.deps) > 0:
             all_packages = OnlinePackage.get_all_packages(
                 latest_paq=OnlinePackage.get_paq_packages()
@@ -171,7 +222,7 @@ class OnlinePackage:
             conf_copy = ConfInstall(**dataclasses.asdict(conf), no_update=True)
             for pak in all_packages:
                 if pak.name in datas.deps:
-                    pak.install(conf_copy)
+                    pak.install(console, conf_copy)
         install_dir = os.path.join(conf.install_dir, self.name)
         try:
             os.makedirs(install_dir, exist_ok=False)
