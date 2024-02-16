@@ -1,0 +1,10 @@
+author = "Terrastruct"
+description = "D2 is a modern diagram scripting language that turns text to diagrams."
+homepage = "https://d2lang.com/"
+license = "MPL-2.0"
+binaries = [
+    "bin/d2",
+]
+name = "d2"
+deps = []
+chmod = []
