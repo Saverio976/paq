@@ -37,7 +37,7 @@ class InstalledPackage:
         return packages
 
     @staticmethod
-    def add_package(name: str):
+    def add_package(name: str) -> "InstalledPackage":
         try:
             with open(InstalledPackage.get_path_config(), "rb") as f:
                 datas = tomllib.load(f)
@@ -45,11 +45,12 @@ class InstalledPackage:
             datas = {}
 
         if name in datas:
-            return
+            InstalledPackage(name)
 
         datas[name] = {}
         with open(InstalledPackage.get_path_config(), "w") as f:
             toml.dump(datas, f)
+        return InstalledPackage(name)
 
     def remove_package(self, conf: ConfRemove):
         # remove all packages if uninstall paq
@@ -72,7 +73,7 @@ class InstalledPackage:
 
         install_dir = os.path.join(conf.install_dir, self.name)
         remove_symlinks(conf.bin_dir, install_dir)
-        shutil.rmtree(install_dir)
+        shutil.rmtree(install_dir, ignore_errors=True)
 
         datas.pop(self.name)
         with open(InstalledPackage.get_path_config(), "w") as f:

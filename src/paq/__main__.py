@@ -23,11 +23,22 @@ def handler_config_set(conf: PaqConf, args: argparse.Namespace):
 def handler_install(conf: PaqConf, args: argparse.Namespace):
     conf.bin_dir = args.bin_dir[0]
     conf.install_dir = args.install_dir[0]
+    no_failed_install = False
+    if len(args.packages) == 0:
+        args.packages = list(map(lambda x: x.name, InstalledPackage.get_all_packages()))
+        no_failed_install = True
     packages = OnlinePackage.get_all_packages(queries=args.packages)
     pacakages_to_install = filter(lambda p: p.name in args.packages, packages)
     for package in pacakages_to_install:
-        package.install(ConfInstall(conf.install_dir, conf.bin_dir, args.update, False))
-        InstalledPackage.add_package(package.name)
+        error = False
+        try:
+            package.install(ConfInstall(conf.install_dir, conf.bin_dir, args.update, no_failed_install))
+        except Exception as esc:
+            print(esc)
+            error = True
+        paq_install = InstalledPackage.add_package(package.name)
+        if error:
+            paq_install.remove_package(ConfRemove(conf.install_dir, conf.bin_dir)
 
 
 def handler_update(conf: PaqConf, args: argparse.Namespace):

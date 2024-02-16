@@ -20,7 +20,7 @@ options:
 ```bash
 paq install <package>
 paq uninstall <package>
-paq search '.' # list all packages
+paq search # list all packages
 paq search 'p.t|l' # regex search
 ```
 
