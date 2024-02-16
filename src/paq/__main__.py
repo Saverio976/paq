@@ -38,7 +38,7 @@ def handler_install(conf: PaqConf, args: argparse.Namespace):
             error = True
         paq_install = InstalledPackage.add_package(package.name)
         if error:
-            paq_install.remove_package(ConfRemove(conf.install_dir, conf.bin_dir)
+            paq_install.remove_package(ConfRemove(conf.install_dir, conf.bin_dir))
 
 
 def handler_update(conf: PaqConf, args: argparse.Namespace):
