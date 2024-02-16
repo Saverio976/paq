@@ -1,0 +1,10 @@
+author = "Streamlink"
+description = "Streamlink is a CLI utility which pipes video streams from various services into a video player"
+homepage = "https://streamlink.github.io/"
+license = "BSD-2-Clause"
+binaries = [
+    "streamlink",
+]
+name = "streamlink"
+deps = []
+chmod = []
