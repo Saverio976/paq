@@ -13,6 +13,8 @@ from xdg_base_dirs import xdg_state_home
 from hashlib import md5
 from typing import List, Optional, Tuple
 from rich.console import Console
+from rich.live import Live
+from rich.spinner import Spinner
 from rich.progress import (
     BarColumn,
     DownloadColumn,
@@ -109,7 +111,11 @@ class OnlinePackage:
 
             package = list(filter(is_packages_file, packages))[0]
 
-            fdownload_progress(console, package.browser_download_url, OnlinePackage.get_paq_packages())
+            fdownload_progress(
+                console,
+                package.browser_download_url,
+                OnlinePackage.get_paq_packages(),
+            )
 
         with open(OnlinePackage.get_paq_packages(), "rb") as f:
             datas = tomllib.load(f)
@@ -202,33 +208,43 @@ class OnlinePackage:
         return self.meta
 
     def install(self, console: Console, conf: ConfInstall):
-        print(f"Installing package: {self.name}")
         download_target, tmpdir = self.__download_package(console)
         datas = self.get_metadata(console, download_target)
         if len(datas.deps) > 0:
-            all_packages = OnlinePackage.get_all_packages(console,
-                latest_paq=OnlinePackage.get_paq_packages()
+            all_packages = OnlinePackage.get_all_packages(
+                console, latest_paq=OnlinePackage.get_paq_packages()
             )
             conf_copy = ConfInstall(**dataclasses.asdict(conf), no_update=True)
             for pak in all_packages:
                 if pak.name in datas.deps:
                     pak.install(console, conf_copy)
         install_dir = os.path.join(conf.install_dir, self.name)
-        try:
-            os.makedirs(install_dir, exist_ok=False)
-        except FileExistsError:
-            if conf.no_update:
-                return
-            if not conf.update:
-                raise IsADirectoryError(f"Package {self.name} already exists")
-            else:
-                remove_symlinks(conf.bin_dir, install_dir)
-                shutil.rmtree(install_dir)
-                os.makedirs(install_dir)
-        with zipfile.ZipFile(download_target, "r") as zipp:
-            zipp.extractall(install_dir)
-        os.remove(download_target)
-        apply_chmod(install_dir)
-        add_symlinks(conf.bin_dir, install_dir)
-        print(f"Installed package: {self.name}")
+
+        live = Live(
+            Spinner("simpleDotsScrolling"),
+            console=console,
+            refresh_per_second=20,
+        )
+
+        with live:
+            live.console.log(f"Installing {self.name}")
+            try:
+                os.makedirs(install_dir, exist_ok=False)
+            except FileExistsError:
+                if conf.no_update:
+                    return
+                if not conf.update:
+                    raise IsADirectoryError(
+                        f"Package {self.name} already exists"
+                    )
+                else:
+                    remove_symlinks(conf.bin_dir, install_dir)
+                    shutil.rmtree(install_dir)
+                    os.makedirs(install_dir)
+            with zipfile.ZipFile(download_target, "r") as zipp:
+                zipp.extractall(install_dir)
+            os.remove(download_target)
+            apply_chmod(install_dir)
+            add_symlinks(conf.bin_dir, install_dir)
+            live.console.log(f"Installed {self.name}")
         tmpdir.cleanup()

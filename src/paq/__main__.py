@@ -42,7 +42,12 @@ def handler_install(conf: PaqConf, args: argparse.Namespace):
         )
         no_failed_install = True
     packages = OnlinePackage.get_all_packages(console, queries=args.packages)
-    pacakages_to_install = filter(lambda p: p.name in args.packages, packages)
+    pacakages_to_install = list(
+        filter(lambda p: p.name in args.packages, packages)
+    )
+    if len(pacakages_to_install) == 0:
+        console.print(f"[red]No packages found for {', '.join(args.packages)}")
+        return
     for package in pacakages_to_install:
         error = False
         try:
@@ -61,7 +66,7 @@ def handler_install(conf: PaqConf, args: argparse.Namespace):
         paq_install = InstalledPackage.add_package(package.name)
         if error:
             paq_install.remove_package(
-                ConfRemove(conf.install_dir, conf.bin_dir)
+                console, ConfRemove(conf.install_dir, conf.bin_dir)
             )
 
 
@@ -79,7 +84,9 @@ def handler_uninstall(conf: PaqConf, args: argparse.Namespace):
     packages = InstalledPackage.get_all_packages()
     pacakages_to_remove = filter(lambda p: p.name in args.packages, packages)
     for package in pacakages_to_remove:
-        package.remove_package(ConfRemove(conf.install_dir, conf.bin_dir))
+        package.remove_package(
+            console, ConfRemove(conf.install_dir, conf.bin_dir)
+        )
 
 
 def handler_search(_: PaqConf, args: argparse.Namespace):
