@@ -1,0 +1,10 @@
+author = "Kubernetes"
+description = "open source container orchestration engine for automating deployment, scaling, and management of containerized applications"
+homepage = "https://kubernetes.io"
+license = "Apache-2.0"
+binaries = [
+    "bin/kubectl"
+]
+name = "kubectl"
+deps = []
+chmod = []
