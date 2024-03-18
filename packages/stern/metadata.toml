@@ -1,0 +1,10 @@
+author = "Stern"
+description = "Multi pod and container log tailing for Kubernetes"
+homepage = "https://github.com/stern/stern/"
+license = "Apache-2.0"
+binaries = [
+    "bin/stern",
+]
+name = "stern"
+deps = []
+chmod = []
