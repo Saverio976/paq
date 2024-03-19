@@ -143,7 +143,7 @@ def create_parser(conf: PaqConf) -> argparse.ArgumentParser:
         "--version",
         default=False,
         action="store_true",
-        help="Specify where binaries will be symlinked",
+        help="print version of paq",
     )
     parser.set_defaults(func=lambda conf, args: parser.print_help())
     subparser = parser.add_subparsers()

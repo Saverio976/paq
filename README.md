@@ -3,25 +3,28 @@
 ## Usage
 
 ```python
-usage: paq [-h] [--install-dir INSTALL_DIR] [--bin-dir BIN_DIR] {config,install,update,uninstall,search} ...
+Usage: paq [-h] [--install-dir INSTALL_DIR] [--bin-dir BIN_DIR] [--version] {config,install,update,uninstall,search,list} ...
 
 Install packages
 
-positional arguments:
-  {config,install,update,uninstall,search}
+Positional Arguments:
+  {config,install,update,uninstall,search,list}
 
-options:
+Options:
   -h, --help            show this help message and exit
   --install-dir INSTALL_DIR
                         Specify where packages will be installed
   --bin-dir BIN_DIR     Specify where binaries will be symlinked
+  --version             print version of paq
 ```
 
 ```bash
 paq install <package>
 paq uninstall <package>
-paq search # list all packages
-paq search 'p.t|l' # regex search
+paq search # list available packages
+paq search 'abc' # list available packages containing abc
+paq list # list installed packages
+paq list 'abc' # list installed packages containing abc
 ```
 
 ## Install

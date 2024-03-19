@@ -6,7 +6,6 @@ import shutil
 from typing import List, Optional
 from xdg_base_dirs import xdg_config_home
 from paq import remove_symlinks, MetaData
-import fnmatch
 from rich.live import Live
 from rich.spinner import Spinner
 
@@ -39,7 +38,7 @@ class InstalledPackage:
         for key, _ in datas.items():
             found = default_found
             for query in queries:
-                if fnmatch.fnmatch(key, query):
+                if query in key:
                     found = True
                     break
             if found:
