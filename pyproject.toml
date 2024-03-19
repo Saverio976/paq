@@ -13,7 +13,7 @@ dependencies = [
     "rich>=13.7.0",
     "PyGithub>=2.2.0",
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.13"
 readme = "README.md"
 license = {text = "MIT"}
 
@@ -25,7 +25,7 @@ build-backend = "pdm.backend"
 distribution = true
 
 [tool.pdm.scripts]
-build = """
+build-nuitka = """
 pdm run nuitka3
  --company-name=Saverio976
  --enable-plugins=no-qt
@@ -39,6 +39,13 @@ pdm run nuitka3
  --onefile-tempdir-spec='{CACHE_DIR}/{COMPANY}/{PRODUCT}/{VERSION}/unpack'
  src/paq
 """
+build-pyinstaller = """
+pdm run pyinstaller
+ --onefile
+ --name paq
+ --collect-all paq
+ src/paq/__main__.py
+"""
 run = "python ./src/paq"
 
 [tool.pdm.dev-dependencies]
@@ -47,6 +54,7 @@ dev = [
     "black>=24.1.1",
     "flake8>=7.0.0",
     "vulture>=2.11",
+    "pyinstaller>=6.5.0",
 ]
 
 [tool.pyright]
