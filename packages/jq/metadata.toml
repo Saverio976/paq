@@ -1,0 +1,10 @@
+author = "Jqlang"
+description = "Command-line JSON processor"
+homepage = "https://jqlang.github.io/jq/"
+license = "Custom"
+binaries = [
+    "bin/jq"
+]
+name = "jq"
+deps = []
+chmod = []
