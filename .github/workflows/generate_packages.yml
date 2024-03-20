@@ -80,7 +80,7 @@ jobs:
 
   generate-package-alacritty:
     permissions: write-all
-    name: Generate Packages Paq
+    name: Generate Packages Alacritty
     runs-on: ubuntu-latest
     outputs:
       failed: ${{ steps.failed.outputs.failed }}
