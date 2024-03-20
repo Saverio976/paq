@@ -3,7 +3,7 @@ from debian:12-slim
 # install deps
 run apt-get update -y && apt-get install -y curl gzip
 
-run curl -Lo /tmp/fastfetch.tar.gz 'https://github.com/fastfetch-cli/fastfetch/releases/latest/download/fastfetch-linux-x86_64.tar.gz'
+run curl -Lo /tmp/fastfetch.tar.gz 'https://github.com/fastfetch-cli/fastfetch/releases/latest/download/fastfetch-linux-amd64.tar.gz'
 run tar xf /tmp/fastfetch.tar.gz -C /tmp
 run mv /tmp/fastfetch-linux-x86_64 /tmp/fastfetch
 run curl -Lo /tmp/README.md 'https://raw.githubusercontent.com/fastfetch-cli/fastfetch/master/README.md'
