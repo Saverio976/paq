@@ -1,0 +1,10 @@
+author = "sharkdp"
+description = "A command-line benchmarking tool"
+homepage = "https://github.com/sharkdp/hyperfine"
+license = "MIT"
+binaries = [
+    "bin/hyperfine",
+]
+name = "hyperfine"
+deps = []
+chmod = []
