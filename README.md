@@ -20,6 +20,8 @@ Options:
 
 ```bash
 paq install <package>
+paq install # install package listed in your config file
+paq update <package>
 paq uninstall <package>
 paq search # list available packages
 paq search 'abc' # list available packages containing abc
