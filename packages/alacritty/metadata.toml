@@ -1,0 +1,12 @@
+author = "Alacritty"
+description = "A cross-platform, OpenGL terminal emulator."
+homepage = "https://alacritty.org/"
+license = "MIT"
+binaries = [
+    "bin/alacritty",
+]
+name = "alacritty"
+deps = []
+chmod = [
+    {path = "alacritty", mode = "binary"}
+]

@@ -1,9 +1,8 @@
 from docker.io/epitechcontent/epitest-docker:latest
 
 # use add to invalidate cache if sources has changed
-run git clone --depth 1 https://github.com/X-R-G-B/FlashBackToTheFuture.git /flashbacktothefuture
+run git clone --single-branch --branch main https://github.com/X-R-G-B/FlashBackToTheFuture.git /flashbacktothefuture
 workdir /flashbacktothefuture
-run git checkout main
 
 # build
 run make -j4
@@ -11,7 +10,8 @@ run make -j4
 # generate files packaged to a temporary directory
 run mkdir -p /tmp/out/bin
 run mkdir -p /tmp/out/libs
-run cp /lib64/libcsfml-graphics.so.2.5 \
+run cp \
+            /lib64/libcsfml-graphics.so.2.5 \
             /lib64/libcsfml-audio.so.2.5 \
             /lib64/libcsfml-system.so.2.5 \
             /lib64/libcsfml-window.so.2.5 \
