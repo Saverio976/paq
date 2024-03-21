@@ -1,0 +1,3 @@
+[submodule "src/tinylibc"]
+	path = src/tinylibc
+	url = https://github.com/Saverio976/tinylibc.git
