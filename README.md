@@ -29,6 +29,8 @@ paq list # list installed packages
 paq list 'abc' # list installed packages containing abc
 ```
 
+list of available packages: <https://github.com/Saverio976/paq/issues/2>
+
 ## Install
 
 1. Dependencies
