@@ -13,8 +13,8 @@ run cp -r /vlang /tmp/out/
 COPY ./metadata.toml /tmp/out/metadata.toml
 run echo "version = \"$(sh -c '/tmp/out/vlang/v --version' | awk '{print $2 " " $3}')\"" >> /tmp/out/metadata.toml
 run cd /tmp/out \
-    && echo "binaries = [" >> /tmp/out/metadata.toml \
-    && find -type f -executable -print | awk '{print "    \"" $1 "\","}' >> /tmp/out/metadata.toml \
+    && echo "chmod = [" >> /tmp/out/metadata.toml \
+    && find -type f -executable -print | awk '{print "    {path = \"" $1 "\", mode = \"binary\"},"}' >> /tmp/out/metadata.toml \
     && echo "]" >> /tmp/out/metadata.toml
 
 # cmd
