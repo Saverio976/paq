@@ -58,7 +58,7 @@ build_package() {
             -v "$TMP_DIR:/out" \
             $DOCKER_ARGS_PAQ \
             "package-tmp-$(basename "$FILE")"
-        (cd "$TMP_DIR" && zip -r "$TMP_ZIP" .)
+        (cd "$TMP_DIR" && zip -r "$TMP_ZIP" . || true)
         cp "$TMP_ZIP" "$TARGET_ZIP"
     )
     if [ "$?" -ne "0" ]
