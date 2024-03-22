@@ -19,6 +19,7 @@ def log_error(log_to_file, message):
     if log_to_file:
         with open(LOG_FILE, "a") as f:
             f.write(message + "\n")
+        print(message)
     else:
         print(message)
 
