@@ -8,7 +8,7 @@ from hashlib import md5
 
 PACKAGES_FILE = "/tmp/paq-packages.toml"
 with open(PACKAGES_FILE, "w") as f:
-    f.write("[paq]\n\n")
+    f.write("name = \"paq\"\n\n")
 
 LOG_FILE = "/tmp/paq-packages.log"
 with open(LOG_FILE, "w") as f:
