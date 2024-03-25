@@ -159,7 +159,6 @@ def process_packages():
             continue
         with open(PACKAGES_FILE, "a") as f:
             f.write(f"[packages.{data['name']}]\n")
-            f.write(f"name = \"{data['name']}\"\n")
             f.write(f"version = \"{data['version']}\"\n")
             f.write(f'download_url = "{package.browser_download_url}"\n')
             f.write(f'content_type = "{package.content_type}"\n')

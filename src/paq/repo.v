@@ -6,14 +6,16 @@ import net.http
 import toml
 import time
 import v.pref
+import compress.szip
 
 struct PaqUnresolved {
 pub:
-	name         string
 	version      string
 	download_url string
 	content_type string
 	checksum     string
+pub mut:
+	name         string
 }
 
 struct Repo {
@@ -22,6 +24,8 @@ mut:
 	packages []PaqUnresolved
 pub:
 	url_packages string
+pub mut:
+	name string
 }
 
 pub fn Repo.new(url_packages string) Repo {
@@ -39,6 +43,16 @@ pub fn (mut repo Repo) update_file_cached() ! {
 		os.mkdir_all(dirname)!
 	}
 	http.download_file(repo.url_packages, repo.path_cached)!
+	repo.name = ''
+	repo.packages.clear()
+}
+
+pub fn (mut repo Repo) resolve_name() ! {
+	if !os.is_file(repo.path_cached) {
+		repo.update_file_cached()!
+	}
+	doc := toml.parse_file(repo.path_cached)!
+	repo.name = doc.value('name').string()
 }
 
 pub fn (mut repo Repo) list_packages() ![]PaqUnresolved {
@@ -49,9 +63,23 @@ pub fn (mut repo Repo) list_packages() ![]PaqUnresolved {
 		repo.update_file_cached()!
 	}
 	doc := toml.parse_file(repo.path_cached)!
-	for value in doc.value('packages').as_map().values() {
-		package := value.reflect[PaqUnresolved]()
+	for key, value in doc.value('packages').as_map() {
+		mut package := value.reflect[PaqUnresolved]()
+		package.name = key
 		repo.packages << package
 	}
 	return repo.packages
+}
+
+fn (package PaqUnresolved) install(install_dir string) !string {
+	tmp_dir_zip := os.join_path(os.vtmp_dir(), '${package.name}-${package.version}.zip')
+	target_dowload_zip := os.join_path(install_dir, package.name)
+	http.download_file(package.download_url, tmp_dir_zip)!
+	if !os.is_dir(target_dowload_zip) {
+		os.mkdir_all(target_dowload_zip)!
+	}
+	if !szip.extract_zip_to_dir(tmp_dir_zip, target_dowload_zip)! {
+		return error('Failed to extract zip for ${package.name} ${package.version}')
+	}
+	return target_dowload_zip
 }
