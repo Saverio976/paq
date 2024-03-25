@@ -39,10 +39,11 @@ chmod = [
 
 It is used to know which packages are ok to download and the url to use
 
-It contain a top level empty `[paq]`
+It contain a top level `name = "<name of this repository package>"`
 
 ```toml
-[paq]
+# for this repository, it is set to paq, but it can be anything else
+name = "paq"
 ```
 
 And for each package
