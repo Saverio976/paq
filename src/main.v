@@ -48,6 +48,7 @@ fn main() {
 		name: 'paq'
 		description: 'WIP side project package manager'
 		execute: fn (cmd cli.Command) ! { cmd.execute_help() }
+		version: '0.4.0'
 		commands: [
 			cli.Command{
 				name: 'install'
