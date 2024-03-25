@@ -72,7 +72,7 @@ if [ "$INSTALL_DIR" != "" ]; then
     ./bin/paq config set install_dir "$INSTALL_DIR"
 fi
 ./bin/paq add-repo "https://github.com/Saverio976/paq/releases/latest/download/paq-packages.toml"
-./bin/paq install paq
+./bin/paq install paq paq
 
 # clean
 rm $tmp_zip
