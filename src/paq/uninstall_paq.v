@@ -3,6 +3,17 @@ module paq
 import os
 
 pub fn uninstall_paq(mut config Config, package_name string) ! {
+	if package_name == 'paq' {
+		for package in config.installed.values() {
+			if package.name == 'paq' {
+				continue
+			}
+			uninstall_paq(config, package.name) or {
+				eprintln('${err}')
+				continue
+			}
+		}
+	}
 	package := config.installed[package_name] or {
 		return error('Package not installed')
 	}

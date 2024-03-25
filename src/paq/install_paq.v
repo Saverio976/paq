@@ -4,6 +4,9 @@ import arrays
 
 pub fn install_paq(mut config Config, repo_name string, package_name string) ! {
 	mut found := false
+	if config.repos.len == 0 {
+		eprintln('No list of package added. If you want the defaults one, please run `paq config add-repo "https://github.com/Saverio976/paq/releases/latest/download/paq-packages.toml"`')
+	}
 	for mut repo in config.repos {
 		repo.resolve_name() or { continue }
 		if repo.name != repo_name {
