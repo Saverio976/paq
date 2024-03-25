@@ -5,10 +5,10 @@ import os
 pub fn uninstall_paq(mut config Config, package_name string) ! {
 	if package_name == 'paq' {
 		for package in config.installed.values() {
-			if package.name == 'paq' {
+			if package.package_name == 'paq' {
 				continue
 			}
-			uninstall_paq(config, package.name) or {
+			uninstall_paq(mut config, package.package_name) or {
 				eprintln('${err}')
 				continue
 			}
