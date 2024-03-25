@@ -25,11 +25,20 @@ pub:
 }
 
 pub fn Repo.new(url_packages string) Repo {
-	cache_sufix := md5.hexhash(url_packages) + '_${pref.get_host_os()}_${pref.get_host_arch()}_' + time.now().ddmmy()
+	cache_sufix := md5.hexhash(url_packages) + '_${pref.get_host_os()}_${pref.get_host_arch()}_' +
+		time.now().ddmmy()
 	return Repo{
 		path_cached: os.join_path(os.cache_dir(), 'paq', 'paq-packages-${cache_sufix}.toml')
 		url_packages: url_packages
 	}
+}
+
+pub fn (mut repo Repo) update_file_cached() ! {
+	dirname := os.dir(repo.path_cached)
+	if !os.is_dir(dirname) {
+		os.mkdir_all(dirname)!
+	}
+	http.download_file(repo.url_packages, repo.path_cached)!
 }
 
 pub fn (mut repo Repo) list_packages() ![]PaqUnresolved {
@@ -37,11 +46,7 @@ pub fn (mut repo Repo) list_packages() ![]PaqUnresolved {
 		return repo.packages
 	}
 	if !os.is_file(repo.path_cached) {
-		dirname := os.dir(repo.path_cached)
-		if !os.is_dir(dirname) {
-			os.mkdir_all(dirname)!
-		}
-		http.download_file(repo.url_packages, repo.path_cached)!
+		repo.update_file_cached()!
 	}
 	doc := toml.parse_file(repo.path_cached)!
 	for value in doc.value('packages').as_map().values() {

@@ -10,5 +10,8 @@ $(TARGET)-prod:
 
 .PHONY: $(TARGET) $(TARGET)-prod
 
+format:
+	v fmt -w .
+
 fclean: clean
 	"$(RM)" $(TARGET)
