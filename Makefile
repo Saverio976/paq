@@ -13,5 +13,7 @@ $(TARGET)-prod:
 format:
 	v fmt -w .
 
+clean:
+
 fclean: clean
-	"$(RM)" $(TARGET)
+	$(RM) $(TARGET)
