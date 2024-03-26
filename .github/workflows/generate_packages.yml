@@ -67,12 +67,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Get Date
-        id: get-date
-        run: |
-          echo "date=$(/bin/date -u '+%Y%m%d%H%M')" >> $GITHUB_OUTPUT
-        shell: bash
-
       - name: Generate Package
         run: .github/workflows/generate_package.sh "./packages/alacritty"
 
@@ -104,7 +98,40 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Generate Package
-        run: .github/workflows/generate_packages.sh "./packages/paq" "./packages/alacritty"
+        run: .github/workflows/generate_packages.sh "./packages/paq" "./packages/alacritty" "./packages/flashbacktothefuture" "./packages/ollama"
+
+      - name: create failed
+        id: failed
+        run: |
+          if [[ -f /tmp/packages-failed.log ]]; then
+            echo "failed=\"$(cat /tmp/packages-failed.log)\"" >> $GITHUB_OUTPUT
+          else
+            echo "failed=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag_name=$(gh release view --json name --jq '.name')
+          for file in /tmp/packages/*.zip; do
+            gh release upload "$tag_name" "$file" --clobber
+          done
+
+  generate-packages-2:
+    permissions: write-all
+    name: Generate Packages 2
+    outputs:
+      failed: ${{ steps.failed.outputs.failed }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate Package FlashBackToTheFuture
+        run: .github/workflows/generate_package.sh "./packages/flashbacktothefuture"
+
+      - name: Generate Package Ollama
+        run: .github/workflows/generate_package.sh "./packages/ollama"
 
       - name: create failed
         id: failed
