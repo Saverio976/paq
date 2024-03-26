@@ -9,7 +9,7 @@ fn get_config() !paq.Config {
 }
 
 fn install(cmd cli.Command) ! {
-	if cmd.args[2] == 'paq' {
+	if cmd.args[1] == 'paq' {
 		target_cpy := os.join_path(os.vtmp_dir(), 'paq-binary')
 		os.cp(os.args[0], target_cpy)!
 		os.chmod(target_cpy, 0o755) or {
