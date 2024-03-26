@@ -46,13 +46,13 @@ fn config_add_repo(cmd cli.Command) ! {
 fn main() {
 	mut app := cli.Command{
 		name: 'paq'
-		description: 'WIP side project package manager'
+		description: 'WIP side project package manager\nList of packages (repos) can be added with `paq config`'
 		execute: fn (cmd cli.Command) ! { cmd.execute_help() }
 		version: '0.4.0'
 		commands: [
 			cli.Command{
 				name: 'install'
-				description: 'install a package from a package list'
+				description: 'install a package from a repo'
 				required_args: 2
 				usage: '<repo> <package>'
 				execute: install
@@ -66,7 +66,7 @@ fn main() {
 			},
 			cli.Command{
 				name: 'update'
-				description: 'update all list of packages'
+				description: 'update all repos'
 				execute: update
 			},
 			cli.Command{

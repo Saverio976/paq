@@ -2,31 +2,32 @@
 
 ## Usage
 
-```python
-Usage: paq [-h] [--install-dir INSTALL_DIR] [--bin-dir BIN_DIR] [--version] {config,install,update,uninstall,search,list} ...
+```txt
+Usage: paq [flags] [commands]
 
-Install packages
+WIP side project package manager
 
-Positional Arguments:
-  {config,install,update,uninstall,search,list}
+Flags:
+  -help               Prints help information.
+  -version            Prints version information.
+  -man                Prints the auto-generated manpage.
 
-Options:
-  -h, --help            show this help message and exit
-  --install-dir INSTALL_DIR
-                        Specify where packages will be installed
-  --bin-dir BIN_DIR     Specify where binaries will be symlinked
-  --version             print version of paq
+Commands:
+  install             install a package from a package list
+  uninstall           uninstall a package
+  update              update all list of packages
+  upgrade             upgrade all packages
+  config              config management tools
+  help                Prints help information.
+  version             Prints version information.
+  man                 Prints the auto-generated manpage.
 ```
 
 ```bash
-paq install <package>
-paq install # install package listed in your config file
-paq update <package>
+paq install <repo> <package>
+paq update
+paq upgrade
 paq uninstall <package>
-paq search # list available packages
-paq search 'abc' # list available packages containing abc
-paq list # list installed packages
-paq list 'abc' # list installed packages containing abc
 ```
 
 list of available packages: <https://github.com/Saverio976/paq/issues/2>
