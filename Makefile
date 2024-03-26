@@ -11,10 +11,8 @@ $(TARGET)-prod:
 		-os linux \
 		-o "$(TARGET)" \
 		-gc none \
-		-ldflags '-static -static-libgcc' \
-		-cflags '-fPIC -static -march=x86-64 -mtune=generic' \
-		-manualfree \
-		-g \
+		-cflags '-fPIC -march=x86-64 -mtune=generic' \
+		-prod \
 		.
 
 .PHONY: $(TARGET) $(TARGET)-prod
