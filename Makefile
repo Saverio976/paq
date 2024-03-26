@@ -13,6 +13,8 @@ $(TARGET)-prod:
 		-gc none \
 		-ldflags '-static -static-libgcc' \
 		-cflags '-fPIC -static -march=x86-64 -mtune=generic' \
+		-manualfree \
+		-g \
 		.
 
 .PHONY: $(TARGET) $(TARGET)-prod
