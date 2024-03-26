@@ -4,12 +4,14 @@ import paq
 import os
 import cli
 
+const flag_bypass_paq_recurse = 'utra_secure_you_know'
+
 fn get_config() !paq.Config {
 	return paq.Config.new()!
 }
 
 fn install(cmd cli.Command) ! {
-	if cmd.args[1] == 'paq' && (cmd.args.len == 2 || cmd.args[2] != 'utra_secure_you_know') {
+	if cmd.args[1] == 'paq' && (cmd.args.len == 2 || cmd.args[2] != flag_bypass_paq_recurse) {
 		println('Installing Paq: First Step...')
 		target_cpy := os.join_path(os.temp_dir(), 'paq-binary')
 		target_cpy_dir := os.dir(target_cpy)
@@ -26,7 +28,7 @@ fn install(cmd cli.Command) ! {
 			return error('Cannot chmod ${target_cpy} to 755')
 		}
 		println('Installing Paq: Last Step...')
-		os.execvp(target_cpy, ['install', cmd.args[0], cmd.args[1], 'ultra_secure_you_know'])!
+		os.execvp(target_cpy, ['install', cmd.args[0], cmd.args[1], flag_bypass_paq_recurse])!
 	}
 	mut config := get_config()!
 	paq.install_paq(mut config, cmd.args[0], cmd.args[1])!
