@@ -50,6 +50,9 @@ pub fn (package Paq) install(bin_dir string) ! {
 	for binary in package.binaries {
 		bin_source := os.join_path(package.install_dir, binary)
 		bin_target := os.join_path(bin_dir, os.base(binary))
+		os.chmod(bin_source, 0o755) or {
+			return error('Cannot chmod ${bin_source} to 755')
+		}
 		os.symlink(bin_source, bin_target) or {
 			return error('Symlink failed for ${bin_source} -> ${bin_target}')
 		}
