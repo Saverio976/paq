@@ -6,7 +6,7 @@ $(TARGET):
 	v . -o $(TARGET)
 
 $(TARGET)-prod:
-	/tmp/v/v \
+	v \
 		-cc gcc \
 		-os linux \
 		-o "$(TARGET)" \
