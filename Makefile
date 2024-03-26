@@ -6,15 +6,13 @@ $(TARGET):
 	v . -o $(TARGET)
 
 $(TARGET)-prod:
-	v \
+	/tmp/v/v \
+		-cc gcc \
 		-os linux \
 		-o "$(TARGET)" \
 		-gc none \
-		-skip-unused \
-		-ldflags '-static' \
-		-ldflags '-static-libgcc' \
-		-cflags '-fPIC -static' \
-		-prod \
+		-ldflags '-static -static-libgcc' \
+		-cflags '-fPIC -static -march=x86-64 -mtune=generic' \
 		.
 
 .PHONY: $(TARGET) $(TARGET)-prod
