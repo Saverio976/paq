@@ -47,10 +47,15 @@ pub fn (mut config Config) set_bin_dir(bin_dir string) ! {
 }
 
 pub fn (mut config Config) add_repo(repo_url string) ! {
+	println('Creating repo ${repo_url}...')
 	mut repo := Repo.new(repo_url)
+	println('Downloading packages list...')
 	repo.update_file_cached()!
+	println('Getting repo name...')
 	repo.resolve_name()!
+	println('Listing packages available for [${repo.name}](${repo_url})')
 	repo.list_packages()!
+	println('Adding repo ${repo.name} to available repos')
 	config.repos << repo
 }
 
