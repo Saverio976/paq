@@ -47,6 +47,11 @@ pub fn (mut config Config) set_bin_dir(bin_dir string) ! {
 }
 
 pub fn (mut config Config) add_repo(repo_url string) ! {
+	for repo_installed in config.repos {
+		if repo_installed.url_packages == repo_url {
+			return error('Repo ${repo_url} already added.')
+		}
+	}
 	println('Creating repo ${repo_url}...')
 	mut repo := Repo.new(repo_url)
 	println('Downloading packages list...')
