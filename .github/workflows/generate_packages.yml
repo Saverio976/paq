@@ -15,7 +15,7 @@ jobs:
     name: Add Cron Message
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Add Cron Message
         env:
@@ -35,7 +35,7 @@ jobs:
     outputs:
       failed: ${{ steps.failed.outputs.failed }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Generate Package
         run: .github/workflows/generate_package.sh "./packages/paq"
@@ -65,7 +65,7 @@ jobs:
     outputs:
       failed: ${{ steps.failed.outputs.failed }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Get Date
         id: get-date
@@ -101,7 +101,7 @@ jobs:
       failed: ${{ steps.failed.outputs.failed }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Generate Package
         run: .github/workflows/generate_packages.sh "./packages/paq" "./packages/alacritty"
@@ -130,7 +130,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate-package-paq, generate-packages-1, generate-package-alacritty]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Add failed package
         env:
@@ -154,7 +154,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate-package-paq, generate-packages-1, generate-package-alacritty]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
 
       - uses: actions/setup-python@v5
         with:
@@ -179,7 +179,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate-metas, generate-failed]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Add Cron Message
         env:
