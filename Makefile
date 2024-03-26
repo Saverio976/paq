@@ -7,14 +7,13 @@ $(TARGET):
 
 $(TARGET)-prod:
 	v \
-		-cross \
 		-os linux \
 		-o "$(TARGET)" \
 		-gc none \
 		-skip-unused \
 		-ldflags '-static' \
 		-ldflags '-static-libgcc' \
-		-cflags '-fPIC' \
+		-cflags '-fPIC -static' \
 		-prod \
 		.
 
