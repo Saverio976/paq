@@ -12,4 +12,5 @@ pub fn set_config_bin_dir(mut config Config, bin_dir string) ! {
 
 pub fn add_config_repo(mut config Config, repo_url string) ! {
 	config.add_repo(repo_url)!
+	config.save()!
 }
