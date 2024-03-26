@@ -50,9 +50,7 @@ pub fn (package Paq) install(bin_dir string) ! {
 	for binary in package.binaries {
 		bin_source := os.join_path(package.install_dir, binary)
 		bin_target := os.join_path(bin_dir, os.base(binary))
-		os.chmod(bin_source, 0o755) or {
-			return error('Cannot chmod ${bin_source} to 755')
-		}
+		os.chmod(bin_source, 0o755) or { return error('Cannot chmod ${bin_source} to 755') }
 		os.symlink(bin_source, bin_target) or {
 			return error('Symlink failed for ${bin_source} -> ${bin_target}')
 		}
@@ -60,9 +58,7 @@ pub fn (package Paq) install(bin_dir string) ! {
 	for config_mode in package.chmod_resolved {
 		path_file := os.join_path(package.install_dir, config_mode.path)
 		if config_mode.mode == 'binary' {
-			os.chmod(path_file, 0o755) or {
-				return error('Cannot chmod ${path_file} to 755')
-			}
+			os.chmod(path_file, 0o755) or { return error('Cannot chmod ${path_file} to 755') }
 		} else {
 			return error('Unknown mode ${config_mode.mode}')
 		}

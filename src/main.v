@@ -24,9 +24,7 @@ fn install(cmd cli.Command) ! {
 		println('Copying ${os.executable()} to ${target_cpy}')
 		os.cp(os.executable(), target_cpy)!
 		println('Chmod 755 of ${target_cpy}')
-		os.chmod(target_cpy, 0o755) or {
-			return error('Cannot chmod ${target_cpy} to 755')
-		}
+		os.chmod(target_cpy, 0o755) or { return error('Cannot chmod ${target_cpy} to 755') }
 		println('Installing Paq: Last Step...')
 		os.execvp(target_cpy, ['install', cmd.args[0], cmd.args[1], flag_bypass_paq_recurse])!
 	}
@@ -68,7 +66,9 @@ fn main() {
 	mut app := cli.Command{
 		name: 'paq'
 		description: 'WIP side project package manager\nList of packages (repos) can be added with `paq config`'
-		execute: fn (cmd cli.Command) ! { cmd.execute_help() }
+		execute: fn (cmd cli.Command) ! {
+			cmd.execute_help()
+		}
 		version: '0.4.0'
 		commands: [
 			cli.Command{
@@ -98,12 +98,16 @@ fn main() {
 			cli.Command{
 				name: 'config'
 				description: 'config management tools'
-				execute: fn (cmd cli.Command) ! { cmd.execute_help() }
+				execute: fn (cmd cli.Command) ! {
+					cmd.execute_help()
+				}
 				commands: [
 					cli.Command{
 						name: 'set'
 						description: 'set config variables'
-						execute: fn (cmd cli.Command) ! { cmd.execute_help() }
+						execute: fn (cmd cli.Command) ! {
+							cmd.execute_help()
+						}
 						commands: [
 							cli.Command{
 								name: 'bin_dir'
@@ -118,7 +122,7 @@ fn main() {
 								description: 'where packages datas will be installed'
 								required_args: 1
 								execute: config_set_install_dir
-							}
+							},
 						]
 					},
 					cli.Command{
@@ -127,9 +131,9 @@ fn main() {
 						description: 'add a url of a list of package'
 						required_args: 1
 						execute: config_add_repo
-					}
+					},
 				]
-			}
+			},
 		]
 	}
 	app.setup()

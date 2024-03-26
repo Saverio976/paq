@@ -10,9 +10,9 @@ struct ConfigToml {
 }
 
 struct PaqInstalled {
-	bin_dir string
+	bin_dir     string
 	install_dir string
-	repo_name string
+	repo_name   string
 mut:
 	package_name string
 }
@@ -24,7 +24,7 @@ struct PaqInstalledsLockToml {
 @[noinit]
 pub struct Config {
 	config_file string
-	lock_file string
+	lock_file   string
 mut:
 	repos       []Repo
 	bin_dir     string
@@ -40,10 +40,10 @@ pub fn (mut config Config) set_install_dir(install_dir string) ! {
 }
 
 pub fn (mut config Config) set_bin_dir(bin_dir string) ! {
-    if !os.is_dir(bin_dir) {
-        os.mkdir_all(bin_dir)!
-    }
-    config.bin_dir = bin_dir
+	if !os.is_dir(bin_dir) {
+		os.mkdir_all(bin_dir)!
+	}
+	config.bin_dir = bin_dir
 }
 
 pub fn (mut config Config) add_repo(repo_url string) ! {

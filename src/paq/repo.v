@@ -15,7 +15,7 @@ pub:
 	content_type string
 	checksum     string
 pub mut:
-	name         string
+	name string
 }
 
 struct Repo {
