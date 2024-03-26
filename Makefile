@@ -6,7 +6,17 @@ $(TARGET):
 	v . -o $(TARGET)
 
 $(TARGET)-prod:
-	v -os linux -o "$(TARGET)" -skip-unused -ldflags '-static' -prod .
+	v \
+		-cross \
+		-os linux \
+		-o "$(TARGET)" \
+		-gc none \
+		-skip-unused \
+		-ldflags '-static' \
+		-ldflags '-static-libgcc' \
+		-cflags '-fPIC' \
+		-prod \
+		.
 
 .PHONY: $(TARGET) $(TARGET)-prod
 
