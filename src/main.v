@@ -11,11 +11,11 @@ fn get_config() !paq.Config {
 fn install(cmd cli.Command) ! {
 	if cmd.args[2] == 'paq' {
 		target_cpy := os.join_path(os.vtmp_dir(), 'paq-binary')
-		os.cp(os.args[0], target_copy)!
+		os.cp(os.args[0], target_cpy)!
 		os.chmod(target_cpy, 0o755) or {
 			return error('Cannot chmod ${target_cpy} to 755')
 		}
-		os.execvp(target_cpy, ['install', cmd.args[0], cmd.args[1]])
+		os.execvp(target_cpy, ['install', cmd.args[0], cmd.args[1]])!
 	}
 	mut config := get_config()!
 	paq.install_paq(mut config, cmd.args[0], cmd.args[1])!
