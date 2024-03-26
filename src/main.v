@@ -9,7 +9,7 @@ fn get_config() !paq.Config {
 }
 
 fn install(cmd cli.Command) ! {
-	if cmd.args[1] == 'paq' {
+	if cmd.args[1] == 'paq' && (args.len == 2 || args[2] != 'utra_secure_you_know') {
 		target_cpy := os.join_path(os.tmp_dir(), 'paq-binary')
 		target_cpy_dir := os.dir(target_cpy)
 		if !os.is_dir(target_cpy) {
@@ -22,7 +22,7 @@ fn install(cmd cli.Command) ! {
 		os.chmod(target_cpy, 0o755) or {
 			return error('Cannot chmod ${target_cpy} to 755')
 		}
-		os.execvp(target_cpy, ['install', cmd.args[0], cmd.args[1]])!
+		os.execvp(target_cpy, ['install', cmd.args[0], cmd.args[1], 'ultra_secure_you_know'])!
 	}
 	mut config := get_config()!
 	paq.install_paq(mut config, cmd.args[0], cmd.args[1])!
