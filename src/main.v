@@ -10,7 +10,7 @@ fn get_config() !paq.Config {
 
 fn install(cmd cli.Command) ! {
 	if cmd.args[1] == 'paq' && (cmd.args.len == 2 || cmd.args[2] != 'utra_secure_you_know') {
-		target_cpy := os.join_path(os.tmp_dir(), 'paq-binary')
+		target_cpy := os.join_path(os.temp_dir(), 'paq-binary')
 		target_cpy_dir := os.dir(target_cpy)
 		if !os.is_dir(target_cpy) {
 			os.mkdir_all(target_cpy_dir)!
