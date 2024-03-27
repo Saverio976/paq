@@ -7,7 +7,7 @@ import os
 pub struct ListPaqResult {
 pub:
 	install_config PaqInstalled
-	paq Paq
+	paq            Paq
 }
 
 pub fn ListPaqResult.new(install_config PaqInstalled) ListPaqResult {

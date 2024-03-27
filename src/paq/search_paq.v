@@ -5,9 +5,9 @@ import strings
 @[noinit]
 pub struct SearchPaqResult {
 pub:
-	name string
+	name    string
 	version string
-	repo string
+	repo    string
 }
 
 fn SearchPaqResult.new(name string, version string, repo_name string) SearchPaqResult {
