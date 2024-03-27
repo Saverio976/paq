@@ -47,6 +47,14 @@ fn upgrade(cmd cli.Command) ! {
 	paq.upgrade_paq(mut config)!
 }
 
+fn search(cmd cli.Command) ! {
+	mut config := get_config()!
+	packages := paq.search_paq(mut config, cmd.args[0])!
+	for package in packages {
+		println('${package.repo}/${package.name} :: ${package.version}')
+	}
+}
+
 fn config_set_bin_dir(cmd cli.Command) ! {
 	mut config := get_config()!
 	paq.set_config_bin_dir(mut config, cmd.args[0])!
@@ -94,6 +102,13 @@ fn main() {
 				name: 'upgrade'
 				description: 'upgrade all packages'
 				execute: upgrade
+			},
+			cli.Command{
+				name: 'search'
+				usage: '<search_term>'
+				required_args: 1
+				description: 'search for a package name in all repos'
+				execute: search
 			},
 			cli.Command{
 				name: 'config'
