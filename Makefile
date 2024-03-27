@@ -13,6 +13,7 @@ $(TARGET)-prod:
 		-gc none \
 		-cflags '-fPIC -march=x86-64 -mtune=generic' \
 		-prod \
+		-compress \
 		.
 
 .PHONY: $(TARGET) $(TARGET)-prod
