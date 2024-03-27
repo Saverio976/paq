@@ -18,7 +18,8 @@ Commands:
   uninstall           uninstall a package
   update              update all repos
   upgrade             upgrade all packages
-  search              search for a package name in all repos
+  search              search for a package name in all repos. If no search_term is provided, all packages will be displayed
+  list                list packages installed. If no search_term is provided, all packages will be displayed
   config              config management tools
   help                Prints help information.
   version             Prints version information.
@@ -27,9 +28,12 @@ Commands:
 
 ```bash
 paq search <package>
+paq search
 paq install <repo> <package>
 paq update
 paq upgrade
+paq list <package>
+paq list
 paq uninstall <package>
 ```
 

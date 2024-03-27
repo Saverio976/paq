@@ -10,10 +10,11 @@ struct ConfigToml {
 }
 
 struct PaqInstalled {
+pub:
 	bin_dir     string
 	install_dir string
 	repo_name   string
-mut:
+pub mut:
 	package_name string
 }
 

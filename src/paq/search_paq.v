@@ -10,7 +10,7 @@ pub:
 	repo string
 }
 
-pub fn SearchPaqResult.new(name string, version string, repo_name string) SearchPaqResult {
+fn SearchPaqResult.new(name string, version string, repo_name string) SearchPaqResult {
 	return SearchPaqResult{
 		name: name
 		version: version
@@ -24,6 +24,9 @@ pub fn search_paq(mut config Config, search_name string) ![]SearchPaqResult {
 		repo.resolve_name()!
 		all_packages := repo.list_packages()!
 		packages := all_packages.filter(fn [search_name] (elem PaqUnresolved) bool {
+			if search_name == '' {
+				return true
+			}
 			if search_name.len > 1 && elem.name.contains(search_name) {
 				return true
 			}

@@ -10,8 +10,6 @@ pub:
 }
 
 struct Paq {
-mut:
-	install_dir string
 pub:
 	author      string
 	description string
@@ -22,6 +20,7 @@ pub:
 	name        string
 	deps        []string
 pub mut:
+	install_dir string
 	chmod_resolved []Chmod
 }
 

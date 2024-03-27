@@ -49,9 +49,39 @@ fn upgrade(cmd cli.Command) ! {
 
 fn search(cmd cli.Command) ! {
 	mut config := get_config()!
-	packages := paq.search_paq(mut config, cmd.args[0])!
+	search_term := if cmd.args.len == 1 { cmd.args[0] } else { '' }
+	packages := paq.search_paq(mut config, search_term)!
 	for package in packages {
 		println('${package.repo}/${package.name} :: ${package.version}')
+	}
+}
+
+fn list(cmd cli.Command) ! {
+	mut config := get_config()!
+	search_term := if cmd.args.len == 1 { cmd.args[0] } else { '' }
+	packages := paq.list_paq(mut config, search_term)!
+	for package in packages {
+		println('')
+		println('#')
+		println('[${package.install_config.package_name}]')
+		println('repo = "${package.install_config.repo_name}"')
+		println('author = "${package.paq.author}"')
+		println('version = "${package.paq.version}"')
+		println('description = "${package.paq.description}"')
+		println('homepage = "${package.paq.homepage}"')
+		println('license = "${package.paq.license}"')
+		println('binaries = [')
+		for binary in package.paq.binaries {
+			println('    "${binary}",')
+		}
+		println(']')
+		println('deps = [')
+		for dep in package.paq.deps {
+			println('    "${dep}",')
+		}
+		println(']')
+		println('bin_dir = "${package.install_config.bin_dir}"')
+		println('install_dir = "${package.paq.install_dir}"')
 	}
 }
 
@@ -105,10 +135,15 @@ fn main() {
 			},
 			cli.Command{
 				name: 'search'
-				usage: '<search_term>'
-				required_args: 1
-				description: 'search for a package name in all repos'
+				usage: '[<search_term>]'
+				description: 'search for a package name in all repos. If no search_term is provided, all packages will be displayed'
 				execute: search
+			},
+			cli.Command{
+				name: 'list'
+				usage: '[<search_term>]'
+				description: 'list packages installed. If no search_term is provided, all packages will be displayed'
+				execute: list
 			},
 			cli.Command{
 				name: 'config'
