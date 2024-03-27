@@ -14,7 +14,7 @@ $(TARGET)-prod:
 		-cflags '-fPIC -march=x86-64 -mtune=generic' \
 		-prod \
 		-compress \
-		-obf
+		-obf \
 		.
 
 .PHONY: $(TARGET) $(TARGET)-prod
