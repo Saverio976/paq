@@ -1,0 +1,10 @@
+author = "ulyssa"
+description = "A Matrix client for Vim addicts"
+homepage = "https://iamb.chat/"
+license = "Apache-2.0"
+binaries = [
+    "bin/iamb"
+]
+name = "iamb"
+deps = []
+chmod = []
