@@ -6,4 +6,3 @@ chmod +x /tmp/wezterm-appimage
 cd /tmp
 /tmp/wezterm-appimage --appimage-extract
 mv /tmp/squashfs-root /tmp/wezterm
-mv /tmp/wezterm/AppRun /tmp/wezterm/wezterm

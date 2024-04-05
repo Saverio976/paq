@@ -3,7 +3,10 @@ description = "A GPU-accelerated cross-platform terminal emulator and multiplexe
 homepage = "https://wezfurlong.org/wezterm/"
 license = "MIT"
 binaries = [
-    "wezterm",
+    "usr/bin/wezterm",
+    "usr/bin/wezterm-gui",
+    "usr/bin/wezterm-mux-server",
+    "usr/bin/strip-ansi-escapes"
 ]
 name = "wezterm"
 deps = []
