@@ -15,7 +15,7 @@ run cp -r /tmp/wezterm/* /tmp/out/
 run cp /tmp/README.md /tmp/out/README.md
 run cp /tmp/LICENSE /tmp/out/LICENSE
 COPY ./metadata.toml /tmp/out/metadata.toml
-run echo "version = \"$(/tmp/out/wezterm --version | cut -d' ' -f2)\"" >> /tmp/out/metadata.toml
+run echo "version = \"$(/tmp/out/AppRun --version | cut -d' ' -f2)\"" >> /tmp/out/metadata.toml
 COPY ./generate_chmod.sh /tmp/generate_chmod.sh
 run bash /tmp/generate_chmod.sh
 
