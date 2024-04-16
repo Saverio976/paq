@@ -19,7 +19,7 @@ run git clone https://github.com/vlang/v.git /vlang \
 # use add to invalidate cache if sources has changed
 run git clone --single-branch --branch main https://github.com/Saverio976/paq.git /paq
 workdir /paq
-run make paq-prod
+run make paq-prod-upx
 
 # generate files packaged to a temporary directory
 run mkdir -p /tmp/out/bin
