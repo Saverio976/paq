@@ -13,7 +13,7 @@ $(TARGET)-prod:
 		-gc none \
 		-cflags '-fPIC -march=x86-64 -mtune=generic' \
 		-prod \
-		-compress \
+		$$(command -v upx 2>/dev/null && echo "-compress" || echo "") \
 		-obf \
 		.
 
