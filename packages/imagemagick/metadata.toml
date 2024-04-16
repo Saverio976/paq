@@ -1,0 +1,9 @@
+author = "ImageMagick"
+description = "Create, Edit, Compose, or Convert Digital Images"
+homepage = "https://imagemagick.org/"
+license = "ImageMagick"
+binaries = [
+    "usr/bin/magick"
+]
+name = "imagemagick"
+deps = []
