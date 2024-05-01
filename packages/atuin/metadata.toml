@@ -1,0 +1,10 @@
+author = "atuinsh"
+description = "✨ Magical shell history"
+homepage = "https://atuin.sh/"
+license = "MIT"
+binaries = [
+    "bin/atuin",
+]
+name = "atuin"
+deps = []
+chmod = []
