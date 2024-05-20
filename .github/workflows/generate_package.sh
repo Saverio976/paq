@@ -23,6 +23,7 @@ get_tmp_dir() {
 
 build_package() {
     FILE="$1"
+    VERBOSE="$2"
     status=0
     echo "Building $FILE: ..."
     LOG_FILE="$(get_log "$FILE")"
@@ -52,10 +53,13 @@ build_package() {
         echo "Failed to build $FILE" >> "/tmp/packages-failed.log"
         cat "$LOG_FILE"
         status=1
+    elif [[ "$VERBOSE" == "-v" ]]
+        cat "$LOG_FILE"
+    then
     else
         echo "Built $FILE: OK"
     fi
     return "$status"
 }
 
-build_package "$1"
+build_package "$1" "$2"

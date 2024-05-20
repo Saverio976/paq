@@ -29,7 +29,7 @@ do
     do
         sleep 1
     done
-    ./.github/workflows/generate_package.sh "$file" &
+    time ./.github/workflows/generate_package.sh "$file" &
 done
 
 wait $(jobs -rp)

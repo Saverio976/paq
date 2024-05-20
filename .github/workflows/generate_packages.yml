@@ -109,7 +109,7 @@ jobs:
         run: .github/workflows/generate_package.sh "./packages/imagemagick"
 
       - name: Generate Package Tor Browser
-        run: .github/workflows/generate_package.sh "./packages/tor-browser"
+        run: .github/workflows/generate_package.sh "./packages/tor-browser" -v
 
       - name: Upload zip
         env:
