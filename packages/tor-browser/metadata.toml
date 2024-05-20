@@ -1,0 +1,10 @@
+author = "torproject"
+description = "Tor Browser aims to make all users look the same, making it difficult for you to be fingerprinted based on your browser and device information"
+homepage = "https://gitlab.torproject.org/tpo/applications/tor-browser"
+license = ""
+binaries = [
+    "bin/tor-browser",
+]
+name = "tor-browser"
+deps = []
+chmod = []
