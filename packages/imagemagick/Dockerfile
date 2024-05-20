@@ -1,7 +1,7 @@
 from debian:12-slim
 
 # install deps
-run apt-get update -y && apt-get install -y curl tar gzip libfreetype-dev libharfbuzz-dev libfribidi-dev
+run apt-get update -y && apt-get install -y curl tar gzip libfreetype-dev libharfbuzz-dev libfribidi-dev jq
 
 # get binary + files
 COPY ./install.sh /tmp/install.sh

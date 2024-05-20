@@ -1,7 +1,12 @@
 #!/bin/bash
 
 version=$(curl -Ls -o /dev/null -w %{url_effective} 'https://github.com/ImageMagick/ImageMagick/releases/latest' | cut -d'/' -f8)
-curl -Lo /tmp/magick-appimage "https://github.com/ImageMagick/ImageMagick/releases/latest/download/ImageMagick--gcc-x86_64.AppImage"
+echo "$version"
+sha=$(curl https://api.github.com/repos/ImageMagick/ImageMagick/git/ref/tags/7.1.1-32 | jq '.object.sha' | cut -d'"' -f2 | cut -c 1-7)
+echo "$sha"
+url="https://github.com/ImageMagick/ImageMagick/releases/latest/download/ImageMagick-$sha-gcc-x86_64.AppImage"
+echo "$url"
+curl -Lo /tmp/magick-appimage "$url"
 chmod +x /tmp/magick-appimage
 cd /tmp
 /tmp/magick-appimage --appimage-extract
