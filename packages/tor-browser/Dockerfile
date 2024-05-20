@@ -10,7 +10,7 @@ run bash /tmp/install.sh
 # generate files packaged to a temporary directory
 run mkdir -p /tmp/out/bin
 run mkdir -p /tmp/out/libs
-run cp -r /tmp/tor-browser /tmp/out/tor-browser
+run mv /tmp/tor-browser /tmp/out/tor-browser
 run cp /tmp/README.md /tmp/out/README.md
 run cp /tmp/LICENSE.html /tmp/out/LICENSE.html
 run cp /usr/lib/x86_64-linux-gnu/libdbus-glib-1.so.2 /tmp/out/libs/libdbus-glib-1.so.2

@@ -79,7 +79,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Generate Package
-        run: .github/workflows/generate_packages.sh "./packages/paq" "./packages/alacritty" "./packages/flashbacktothefuture" "./packages/ollama"
+        run: .github/workflows/generate_packages.sh "./packages/paq" "./packages/alacritty" "./packages/flashbacktothefuture" "./packages/ollama" "./packages/imagemagick" "./packages/tor-browser"
 
       - name: Upload zip
         env:
@@ -104,6 +104,12 @@ jobs:
 
       - name: Generate Package Ollama
         run: .github/workflows/generate_package.sh "./packages/ollama"
+
+      - name: Generate Package ImageMagick
+        run: .github/workflows/generate_package.sh "./packages/imagemagick"
+
+      - name: Generate Package Tor Browser
+        run: .github/workflows/generate_package.sh "./packages/tor-browser"
 
       - name: Upload zip
         env:
