@@ -7,4 +7,3 @@ binaries = [
 ]
 name = "tor-browser"
 deps = []
-chmod = []
