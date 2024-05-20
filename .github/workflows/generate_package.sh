@@ -54,8 +54,8 @@ build_package() {
         cat "$LOG_FILE"
         status=1
     elif [[ "$VERBOSE" == "-v" ]]
-        cat "$LOG_FILE"
     then
+        cat "$LOG_FILE"
     else
         echo "Built $FILE: OK"
     fi
