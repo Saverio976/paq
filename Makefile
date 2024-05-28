@@ -1,11 +1,12 @@
 TARGET		=		paq
 
-FLAGS_PROD	=		-cc gcc \
-					-os linux \
+CRI			?=		podman
+
+FLAGS_PROD	=		-os linux \
 					-gc none \
 					-cflags '-fPIC -march=x86-64 -mtune=generic' \
 					-prod \
-					-obf \
+					-obf
 
 all: $(TARGET)
 
@@ -16,10 +17,12 @@ $(TARGET)-prod:
 	v . \
 		$(FLAGS_PROD)
 
-$(TARGET)-prod-upx:
+$(TARGET)-release:
 	v . \
 		$(FLAGS_PROD) \
-		-compress
+		-skip-unused \
+		-compress \
+		-cflags '-static'
 
 .PHONY: $(TARGET) $(TARGET)-prod
 
