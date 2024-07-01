@@ -9,7 +9,7 @@ run bash /tmp/install.sh
 
 # generate files packaged to a temporary directory
 run mkdir -p /tmp/out/bin
-run cp /tmp/lfs-dal/lfs-dal /tmp/out/bin/lfs-dal
+run cp /tmp/lfs-dal /tmp/out/bin/lfs-dal
 run curl -Lo /tmp/out/README.md 'https://raw.githubusercontent.com/regen100/lfs-dal/main/README.md'
 run curl -Lo /tmp/out/LICENSE 'https://raw.githubusercontent.com/regen100/lfs-dal/main/LICENSE'
 COPY ./metadata.toml /tmp/out/metadata.toml
