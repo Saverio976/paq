@@ -1,0 +1,10 @@
+author = "regen100"
+description = "LFS Custom Transfer Agent"
+homepage = "https://github.com/regen100/lfs-dal"
+license = "MIT"
+binaries = [
+    "bin/lfs-dal",
+]
+name = "lfs-dal"
+deps = []
+chmod = []
