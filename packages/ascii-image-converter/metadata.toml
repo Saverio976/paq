@@ -1,0 +1,10 @@
+author = "TheZoraiz"
+description = "A cross-platform command-line tool to convert images into ascii art and print them on the console. Now supports braille art!"
+homepage = "https://github.com/TheZoraiz/ascii-image-converter"
+license = "Apache-2.0"
+binaries = [
+    "bin/ascii-image-converter"
+]
+name = "ascii-image-converter"
+deps = []
+chmod = []
