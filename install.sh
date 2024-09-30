@@ -22,9 +22,9 @@ unzip_command=""
 
 get_python() {
     if command -v python3; then
-        echo "python3"
+        command -v python3
     elif command -v python; then
-        echo "python"
+        command -v python
     else
         return 1
     fi
