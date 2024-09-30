@@ -21,9 +21,9 @@ download_cmd=""
 unzip_command=""
 
 get_python() {
-    if command -v python3; then
+    if command -v python3 2>/dev/null 1>/dev/null; then
         command -v python3
-    elif command -v python; then
+    elif command -v python 2>/dev/null 1>/dev/null; then
         command -v python
     else
         return 1
