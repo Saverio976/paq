@@ -53,7 +53,12 @@ fi
 if command -v unzip; then
     unzip_command="unzip -q \"$tmp_zip\""
 elif get_python; then
-    python_cmd="import zipfile; with zipfile.ZipFile('$tmp_zip', 'r') as zf: zf.extractall()"
+    python_cmd="$(cat << EOF
+    import zipfile
+    with zipfile.ZipFile('$tmp_zip', 'r') as zf:
+        zf.extractall()
+    EOF
+    )"
     unzip_command="$(get_python) -c \"$python_cmd\""
 else
     echo "Install unzip to extract paq.zip"
