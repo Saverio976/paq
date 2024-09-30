@@ -20,24 +20,10 @@ url="https://github.com/Saverio976/paq/releases/latest/download/paq.zip"
 download_cmd=""
 unzip_command=""
 
-get_python() {
-    if command -v python3 2>/dev/null 1>/dev/null; then
-        command -v python3
-    elif command -v python 2>/dev/null 1>/dev/null; then
-        command -v python
-    else
-        return 1
-    fi
-    return 0
-}
-
 if command -v wget; then
     download_cmd="wget -q -O $tmp_zip $url"
 elif command -v curl; then
     download_cmd="curl -s -L $url -o $tmp_zip"
-elif get_python; then
-    python_cmd="import urllib.request; res = urllib.request.urlopen('$url'); with open('$tmp_zip', 'wb') as f: f.write(res.read())"
-    download_cmd="$(get_python) -c \"$python_cmd\""
 else
     echo "Install wget or curl to download paq"
     exit 1
@@ -52,9 +38,6 @@ fi
 
 if command -v unzip; then
     unzip_command="unzip -q \"$tmp_zip\""
-elif get_python; then
-    python_cmd="$(echo -e "import zipfile\nwith zipfile.ZipFile('$tmp_zip', 'r') as zf:\n    zf.extractall()")"
-    unzip_command="$(get_python) -c \"$python_cmd\""
 else
     echo "Install unzip to extract paq.zip"
     exit 1
