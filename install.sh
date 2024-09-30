@@ -43,6 +43,7 @@ else
     exit 1
 fi
 
+echo "$download_cmd"
 $download_cmd
 if [ "$?" -ne "0" ]; then
     echo "Failed to download paq.zip"
@@ -50,7 +51,7 @@ if [ "$?" -ne "0" ]; then
 fi
 
 if command -v unzip; then
-    unzip_command="unzip -q $tmp_zip"
+    unzip_command="unzip -q \"$tmp_zip\""
 elif get_python; then
     python_cmd="import zipfile; with zipfile.ZipFile('$tmp_zip', 'r') as zf: zf.extractall()"
     unzip_command="$(get_python) -c \"$python_cmd\""
@@ -59,6 +60,7 @@ else
     exit 1
 fi
 
+echo "$unzip_command"
 $unzip_command
 if [ "$?" -ne "0" ]; then
     echo "Failed to extract paq.zip"
