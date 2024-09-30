@@ -37,11 +37,14 @@ if [ "$?" -ne "0" ]; then
 fi
 
 if command -v unzip; then
-    unzip_command="unzip -q \"$tmp_zip\""
+    unzip_command="unzip -q $tmp_zip"
 else
     echo "Install unzip to extract paq.zip"
     exit 1
 fi
+
+echo 'echo *'
+echo *
 
 echo "$unzip_command"
 $unzip_command
