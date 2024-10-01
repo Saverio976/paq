@@ -1,0 +1,11 @@
+author = "astral-sh"
+description = "An extremely fast Python package and project manager, written in Rust."
+homepage = "https://github.com/astral-sh/uv"
+license = "MIT"
+binaries = [
+    "bin/uv",
+    "bin/uvx"
+]
+name = "uv"
+deps = []
+chmod = []
