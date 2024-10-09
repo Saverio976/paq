@@ -7,4 +7,6 @@ binaries = [
 ]
 name = "ollama"
 deps = []
-chmod = []
+chmod = [
+    {path = "ollama", mode = "binary"}
+]
