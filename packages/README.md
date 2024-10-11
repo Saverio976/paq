@@ -26,8 +26,8 @@ name = "baz-bar" # must be the same as the directory name in this repo
                  # `packages/baz-bar`.
 version = "X.X.X.x"
 deps = [
-    "anotherpackagename",
-    "packagename"
+    "reponame/anotherpackagename",
+    "reponame1/packagename"
 ]
 chmod = [
     {path = "libs/baz", mode = "binary"} # `path` is relative to /out

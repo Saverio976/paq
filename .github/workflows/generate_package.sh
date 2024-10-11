@@ -44,7 +44,7 @@ build_package() {
             --rm \
             -v "$TMP_DIR:/out" \
             "package-tmp-$(basename "$FILE")"
-        (cd "$TMP_DIR" && zip -r "$TMP_ZIP" . || true)
+        (cd "$TMP_DIR" && zip -9 -r "$TMP_ZIP" . || true)
         cp "$TMP_ZIP" "$TARGET_ZIP"
     )
     if [ "$?" -ne "0" ]

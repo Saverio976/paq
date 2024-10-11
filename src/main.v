@@ -29,7 +29,7 @@ fn install(cmd cli.Command) ! {
 		os.execvp(target_cpy, ['install', cmd.args[0], cmd.args[1], flag_bypass_paq_recurse])!
 	}
 	mut config := get_config()!
-	paq.install_paq(mut config, cmd.args[0], cmd.args[1])!
+	paq.install_paq(mut config, cmd.args[0], cmd.args[1], false)!
 }
 
 fn uninstall(cmd cli.Command) ! {
@@ -44,7 +44,7 @@ fn update(cmd cli.Command) ! {
 
 fn upgrade(cmd cli.Command) ! {
 	mut config := get_config()!
-	paq.upgrade_paq(mut config)!
+	paq.upgrade_paq(mut config, false)!
 }
 
 fn search(cmd cli.Command) ! {

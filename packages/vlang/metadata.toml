@@ -1,9 +1,0 @@
-author = "vlang"
-description = "Simple, fast, safe, compiled language for developing maintainable software."
-homepage = "https://vlang.io/"
-license = "MIT"
-name = "vlang"
-binaries = [
-    "vlang/v"
-]
-deps = []

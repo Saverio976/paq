@@ -40,11 +40,19 @@ pub fn (mut config Config) set_install_dir(install_dir string) ! {
 	config.install_dir = install_dir
 }
 
+pub fn (config Config) get_install_dir() string {
+	return config.install_dir
+}
+
 pub fn (mut config Config) set_bin_dir(bin_dir string) ! {
 	if !os.is_dir(bin_dir) {
 		os.mkdir_all(bin_dir)!
 	}
 	config.bin_dir = bin_dir
+}
+
+pub fn (config Config) get_bin_dir() string {
+	return config.bin_dir
 }
 
 pub fn (mut config Config) add_repo(repo_url string) ! {
