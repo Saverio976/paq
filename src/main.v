@@ -44,7 +44,7 @@ fn uninstall(cmd cli.Command) ! {
 	mut config := get_config()!
 	splited := cmd.args[0].split('/')
 	if splited.len == 2 {
-		paq.uninstall_paq(mut config, splited[1])
+		paq.uninstall_paq(mut config, splited[1])!
 	} else {
 		paq.uninstall_paq(mut config, cmd.args[0])!
 	}
