@@ -32,7 +32,7 @@ pub fn Repo.new(url_packages string) Repo {
 	cache_sufix := md5.hexhash(url_packages) + '_${pref.get_host_os()}_${pref.get_host_arch()}_' +
 		time.now().ddmmy()
 	return Repo{
-		path_cached: os.join_path(os.cache_dir(), 'paq', 'paq-packages-${cache_sufix}.toml')
+		path_cached:  os.join_path(os.cache_dir(), 'paq', 'paq-packages-${cache_sufix}.toml')
 		url_packages: url_packages
 	}
 }

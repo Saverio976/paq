@@ -25,7 +25,7 @@ pub fn install_paq(mut config Config, repo_name string, package_name string, is_
 			return error('failed to install ${package_name}: ${err}')
 		}
 		for dep in package_paq.deps {
-			splited := dep.split('/');
+			splited := dep.split('/')
 			if splited.len != 2 {
 				continue
 			}

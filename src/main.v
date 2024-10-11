@@ -42,7 +42,7 @@ fn install(cmd cli.Command) ! {
 
 fn uninstall(cmd cli.Command) ! {
 	mut config := get_config()!
-	splited := cmd.args[0].split()
+	splited := cmd.args[0].split('/')
 	if splited.len == 2 {
 		paq.uninstall_paq(mut config, splited[1])
 	} else {
@@ -115,85 +115,85 @@ fn config_add_repo(cmd cli.Command) ! {
 
 fn main() {
 	mut app := cli.Command{
-		name: 'paq'
+		name:        'paq'
 		description: 'WIP side project package manager\nList of packages (repos) can be added with `paq config`'
-		execute: fn (cmd cli.Command) ! {
+		execute:     fn (cmd cli.Command) ! {
 			cmd.execute_help()
 		}
-		version: '0.4.0'
-		commands: [
+		version:     '0.4.0'
+		commands:    [
 			cli.Command{
-				name: 'install'
-				description: 'install a package from a repo'
+				name:          'install'
+				description:   'install a package from a repo'
 				required_args: 1
-				usage: '{<repo> <package>,<repo>/<package>}'
-				execute: install
+				usage:         '{<repo> <package>,<repo>/<package>}'
+				execute:       install
 			},
 			cli.Command{
-				name: 'uninstall'
-				description: 'uninstall a package'
+				name:          'uninstall'
+				description:   'uninstall a package'
 				required_args: 1
-				usage: '<package>'
-				execute: uninstall
+				usage:         '<package>'
+				execute:       uninstall
 			},
 			cli.Command{
-				name: 'update'
+				name:        'update'
 				description: 'update all repos'
-				execute: update
+				execute:     update
 			},
 			cli.Command{
-				name: 'upgrade'
+				name:        'upgrade'
 				description: 'upgrade all packages'
-				execute: upgrade
+				execute:     upgrade
 			},
 			cli.Command{
-				name: 'search'
-				usage: '[<search_term>]'
+				name:        'search'
+				usage:       '[<search_term>]'
 				description: 'search for a package name in all repos. If no search_term is provided, all packages will be displayed'
-				execute: search
+				execute:     search
 			},
 			cli.Command{
-				name: 'list'
-				usage: '[<search_term>]'
+				name:        'list'
+				usage:       '[<search_term>]'
 				description: 'list packages installed. If no search_term is provided, all packages will be displayed'
-				execute: list
+				execute:     list
 			},
 			cli.Command{
-				name: 'config'
+				name:        'config'
 				description: 'config management tools'
-				execute: fn (cmd cli.Command) ! {
+				execute:     fn (cmd cli.Command) ! {
 					cmd.execute_help()
 				}
-				commands: [
+				commands:    [
 					cli.Command{
-						name: 'set'
+						name:        'set'
 						description: 'set config variables'
-						execute: fn (cmd cli.Command) ! {
+						execute:     fn (cmd cli.Command) ! {
 							cmd.execute_help()
 						}
-						commands: [
+						commands:    [
 							cli.Command{
-								name: 'bin_dir'
-								usage: '<path>'
-								description: 'where binaries will be symlinked'
+								name:          'bin_dir'
+								usage:         '<path>'
+								description:   'where binaries will be symlinked'
 								required_args: 1
-								execute: config_set_bin_dir
+								execute:       config_set_bin_dir
 							},
 							cli.Command{
-								name: 'install_dir'
-								usage: '<path>'
-								description: 'where packages datas will be installed'
+								name:          'install_dir'
+								usage:         '<path>'
+								description:   'where packages datas will be installed'
 								required_args: 1
-								execute: config_set_install_dir
+								execute:       config_set_install_dir
 							},
 						]
 					},
 					cli.Command{
-						name: 'add-repo'
-						usage: '<url>'
-						description: 'add a url of a list of package'
+						name:          'add-repo'
+						usage:         '<url>'
+						description:   'add a url of a list of package'
 						required_args: 1
-						execute: config_add_repo
+						execute:       config_add_repo
 					},
 				]
 			},

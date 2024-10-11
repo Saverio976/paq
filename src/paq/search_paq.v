@@ -12,9 +12,9 @@ pub:
 
 fn SearchPaqResult.new(name string, version string, repo_name string) SearchPaqResult {
 	return SearchPaqResult{
-		name: name
+		name:    name
 		version: version
-		repo: repo_name
+		repo:    repo_name
 	}
 }
 
