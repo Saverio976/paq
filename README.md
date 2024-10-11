@@ -90,3 +90,7 @@ curl -fsSL https://raw.githubusercontent.com/Saverio976/paq/main/install.sh | \
 ```
 paq uninstall paq
 ```
+
+## Create a package
+
+[README.md](./packages/README.md)
