@@ -26,7 +26,14 @@ name = "baz-bar" # must be the same as the directory name in this repo
                  # `packages/baz-bar`.
 version = "X.X.X.x"
 deps = [
-    "reponame/anotherpackagename",
+    "reponame/anotherpackagename", # the package will be installed
+                                   # in the same folder
+                                   # i.e.:
+                                   # for a main package name "foo"
+                                   # and a deps "fu/bar"
+                                   # the final directory tree will be
+                                   # - foo/
+                                   # - foo/bar/
     "reponame1/packagename"
 ]
 chmod = [
