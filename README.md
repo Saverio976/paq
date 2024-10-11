@@ -1,10 +1,15 @@
 # paq
 
+## Goal
+
 Why the hell debian packages are so old.
 
 Just give me the last version of neovim!!!!
 
 ## Usage
+
+<details>
+  <summary>`paq -help`</summary>
 
 ```txt
 Usage: paq [flags] [commands]
@@ -30,6 +35,8 @@ Commands:
   man                 Prints the auto-generated manpage.
 ```
 
+</details>
+
 ```bash
 paq search <package>
 paq search
@@ -41,9 +48,15 @@ paq list
 paq uninstall <package>
 ```
 
-list of available packages: <https://github.com/Saverio976/paq/issues/2>
+## Repository Adding Packages
+
+- <https://github.com/Saverio976/paq-packages1> (some terminal CLI that replace basic utility)
+- <https://github.com/Saverio976/paq-packages2> (some terminal CLI)
+- <https://github.com/Saverio976/paq-packages3> (terminals emulator, programming languages, terminal editors, ...)
 
 ## Install
+
+### The Hard Way
 
 1. Dependencies
 
@@ -59,6 +72,8 @@ list of available packages: <https://github.com/Saverio976/paq/issues/2>
   If you set the env variable `BIN_DIR`, binaries will be symlinked there.
 
   If you set the env variable `INSTALL_DIR`, packages will be installed there.
+
+### The Easy Way
 
 <details>
   <summary>One Line Script if you trust the author</summary>
