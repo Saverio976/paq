@@ -11,6 +11,15 @@ fn get_config() !paq.Config {
 }
 
 fn install(cmd cli.Command) ! {
+	mut config := get_config()!
+	if cmd.args.len == 1 {
+		splited := cmd.args[0].split('/')
+		if splited.len != 2 {
+			return error('provide <repo>/<package>')
+		}
+		paq.install_paq(mut config, splited[0], splited[1], false)!
+		return
+	}
 	if cmd.args[1] == 'paq' && (cmd.args.len == 2 || cmd.args[2] != flag_bypass_paq_recurse) {
 		println('Installing Paq: First Step...')
 		target_cpy := os.join_path(os.temp_dir(), 'paq-binary')
@@ -28,13 +37,17 @@ fn install(cmd cli.Command) ! {
 		println('Installing Paq: Last Step...')
 		os.execvp(target_cpy, ['install', cmd.args[0], cmd.args[1], flag_bypass_paq_recurse])!
 	}
-	mut config := get_config()!
 	paq.install_paq(mut config, cmd.args[0], cmd.args[1], false)!
 }
 
 fn uninstall(cmd cli.Command) ! {
 	mut config := get_config()!
-	paq.uninstall_paq(mut config, cmd.args[0])!
+	splited := cmd.args[0].split()
+	if splited.len == 2 {
+		paq.uninstall_paq(mut config, splited[1])
+	} else {
+		paq.uninstall_paq(mut config, cmd.args[0])!
+	}
 }
 
 fn update(cmd cli.Command) ! {
@@ -112,8 +125,8 @@ fn main() {
 			cli.Command{
 				name: 'install'
 				description: 'install a package from a repo'
-				required_args: 2
-				usage: '<repo> <package>'
+				required_args: 1
+				usage: '{<repo> <package>,<repo>/<package>}'
 				execute: install
 			},
 			cli.Command{

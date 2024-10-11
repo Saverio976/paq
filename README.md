@@ -41,6 +41,7 @@ Commands:
 paq search <package>
 paq search
 paq install <repo> <package>
+paq install <repo>/<package>
 paq update
 paq upgrade
 paq list <package>
